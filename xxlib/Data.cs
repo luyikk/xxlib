@@ -14,7 +14,6 @@ namespace xx
         int len;
         int cap;
          
-
         /// <summary>
         /// 长度
         /// </summary>
@@ -23,7 +22,6 @@ namespace xx
         /// 分配大小
         /// </summary>
         public int Cap => cap;
-
 
         public Data(int cap = 256)
         {           
@@ -47,7 +45,6 @@ namespace xx
                 buff = (byte*)handle.AddrOfPinnedObject();
             }
         }
-
 
 
         /// <summary>
@@ -106,7 +103,6 @@ namespace xx
 
 
         #region Write
-
 
         /// <summary>
         /// 写入一段二进制
