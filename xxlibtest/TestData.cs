@@ -408,6 +408,8 @@ namespace xxlibtest
 
                 Assert.True(read.ReadVarInteger(out string v2) == 0);
                 Assert.Equal("321321321", v2);
+
+
             }
 
         }
