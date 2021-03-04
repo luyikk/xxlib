@@ -545,7 +545,6 @@ namespace xx
         }
         #endregion
 
-
         #region ReadVar
         /// <summary>
         /// 读取变长 u16
@@ -669,8 +668,6 @@ namespace xx
         /// 下标访问
         /// </summary>       
         public byte this[int index] => buff[index];
-
-
 
         // 等效代码： if( (v & 1) > 0 ) return -(v + 1) / 2; else return v / 2;
 
