@@ -31,9 +31,6 @@ namespace xxlibtest
         [Fact]
         public void test_write_buff()
         {
-
-            
-
             {
                 using var data = new xx.Data(cap: 0);
                 data.WriteBuf(new byte[] { 1, 2, 3, 4 }, 0, 4);
@@ -408,7 +405,6 @@ namespace xxlibtest
 
                 Assert.True(read.ReadVarInteger(out string v2) == 0);
                 Assert.Equal("321321321", v2);
-
 
             }
 
