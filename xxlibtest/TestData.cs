@@ -402,6 +402,7 @@ namespace xxlibtest
                 using var data = new xx.Data();
                 data.WriteVarInteger("123123123");
                 data.WriteVarInteger("321321321");
+                data.WriteVarInteger("");
                 var (buff, len) = data.ToArray();
                 var read = new xx.DataReader(buff, len);
                 Assert.True(read.ReadVarInteger(out string v) == 0);
@@ -409,6 +410,9 @@ namespace xxlibtest
 
                 Assert.True(read.ReadVarInteger(out string v2) == 0);
                 Assert.Equal("321321321", v2);
+
+                Assert.True(read.ReadVarInteger(out string v3) == 0);
+                Assert.Equal("", v3);
             }
             {
 

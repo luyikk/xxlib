@@ -650,10 +650,18 @@ namespace xx
         {
             if(ReadVarInteger(out uint len) == 0)
             {
-                byte[] data = new byte[len];
-                if(ReadBuf(data, 0, data.Length) == 0)
+                if (len > 0)
                 {
-                    v= System.Text.Encoding.UTF8.GetString(data);
+                    byte[] data = new byte[len];
+                    if (ReadBuf(data, 0, data.Length) == 0)
+                    {
+                        v = System.Text.Encoding.UTF8.GetString(data);
+                        return 0;
+                    }
+                }
+                else
+                {
+                    v = "";
                     return 0;
                 }
             }
