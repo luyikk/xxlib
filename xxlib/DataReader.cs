@@ -22,7 +22,14 @@ namespace xx
         /// <summary>
         /// 写入偏移量
         /// </summary>
-        public int Offset => offset;
+        public int Offset
+        {
+            get => offset;
+            set
+            {
+                offset = value;
+            }
+        }
 
 
         public DataReader(byte[] data)

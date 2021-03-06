@@ -4,6 +4,7 @@ using System.Text;
 
 namespace xx
 {
+
     public interface ISerde
     {
         ushort GetTypeid();
@@ -205,7 +206,7 @@ namespace xx
         }
 
 
-        private void WriteObj<T>(Data data, T v) where T : class, ISerde, new()
+        public void WriteObj<T>(Data data, T v) where T : class, ISerde, new()
         {
             if (v is null)
                 data.WriteFiexd((byte)0);
@@ -247,7 +248,7 @@ namespace xx
 
         #region WriteList
 
-        public void WriteTo<T,S>(Data data,T v) where T : IList<S> where S:class,ISerde,new()
+        public void WriteTo<S>(Data data,List<S> v) where S:class,ISerde,new()
         {
             this.PtrStore.Clear();
 
@@ -730,13 +731,58 @@ namespace xx
         #endregion
 
         #region ReadClass
+
+        public int ReadFrom(DataReader data,out ISerde v)
+        {
+            IdxStore.Clear();
+            return ReadISerde(data, out v);
+
+        }
+
+
+        public int ReadISerde(DataReader data, out ISerde v)
+        {
+            v = default;
+            int err;
+            if ((err = data.ReadVarInteger(out uint offset)) == 0)
+            {
+                if (offset == 0)
+                    return 0;
+
+                if (!IdxStore.TryGetValue(offset, out var obj))
+                {
+                    if ((err = data.ReadVarInteger(out ushort typeid)) == 0)
+                    {
+                        v = Create(typeid);
+                        if (v != null)
+                        {
+                            IdxStore.Add(offset, v);
+                            return v.Read(this, data);
+                        }
+                        else
+                            throw new KeyNotFoundException($"create obj not found typeid:{typeid}");
+                    }
+                }
+                else
+                {
+                    v = obj;
+                    if (v != null)
+                        return 0;
+                    else
+                        throw new KeyNotFoundException($"offset :{offset} obj not as ISerde");
+                }
+            }
+
+            return err;
+        }
+
         public int ReadFrom<T>(DataReader data, out T v) where T : class, ISerde, new()
         {
             IdxStore.Clear();
             return ReadObj(data, out v);
         }
 
-        private int ReadObj<T>(DataReader data,out T v) where T : class, ISerde, new()
+        public int ReadObj<T>(DataReader data,out T v) where T : class, ISerde, new()
         {
             v = null;
             int err;
@@ -752,7 +798,7 @@ namespace xx
                         v = Create(typeid) as T;
                         if (v != null)
                         {
-                            IdxStore.Add(typeid, v);
+                            IdxStore.Add(offset, v);
                             return v.Read(this, data);                            
                         }
                         else
