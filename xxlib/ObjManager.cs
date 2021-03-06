@@ -542,7 +542,7 @@ namespace xx
             {
                 if (have == 1)
                 {
-                    var r = data.ReadFiexd(out short b);
+                    var r = data.ReadVarInteger(out short b);
                     v = b;
                     return r;
                 }
@@ -566,7 +566,7 @@ namespace xx
             {
                 if (have == 1)
                 {
-                    var r = data.ReadFiexd(out ushort b);
+                    var r = data.ReadVarInteger(out ushort b);
                     v = b;
                     return r;
                 }
@@ -590,7 +590,7 @@ namespace xx
             {
                 if (have == 1)
                 {
-                    var r = data.ReadFiexd(out int b);
+                    var r = data.ReadVarInteger(out int b);
                     v = b;
                     return r;
                 }
@@ -614,7 +614,7 @@ namespace xx
             {
                 if (have == 1)
                 {
-                    var r = data.ReadFiexd(out uint b);
+                    var r = data.ReadVarInteger(out uint b);
                     v = b;
                     return r;
                 }
@@ -638,7 +638,7 @@ namespace xx
             {
                 if (have == 1)
                 {
-                    var r = data.ReadFiexd(out long b);
+                    var r = data.ReadVarInteger(out long b);
                     v = b;
                     return r;
                 }
@@ -662,7 +662,7 @@ namespace xx
             {
                 if (have == 1)
                 {
-                    var r = data.ReadFiexd(out ulong b);
+                    var r = data.ReadVarInteger(out ulong b);
                     v = b;
                     return r;
                 }
@@ -781,6 +781,9 @@ namespace xx
 
             if (err == 0)
             {
+                if (len > data.Length - data.Offset)
+                    return -1001;
+
                 v = new byte[len];
                 return data.ReadBuf(v, 0, v.Length);
             }
@@ -795,6 +798,9 @@ namespace xx
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
             {
+                if (len > data.Length - data.Offset)
+                    return -1002;
+
                 v = new T[len];
                 for (int i = 0; i < len; i++)
                 {
@@ -816,7 +822,7 @@ namespace xx
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
             {
-                v = new List<T>((int)len);
+                v = new List<T>();
                 for (int i = 0; i < len; i++)
                 {
                     if ((err = ReadObj(data, out T x)) == 0)
@@ -826,13 +832,13 @@ namespace xx
             return err;
         }
 
-        public int ReadFrom<T>(DataReader data,out List<byte> v)
+        public int ReadFrom(DataReader data,out List<byte> v)
         {
             v = null;
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
             {
-                v = new List<byte>((int)len);
+                v = new List<byte>();
                 for (int i = 0; i < len; i++)
                 {
                     if ((err = data.ReadFiexd(out byte b)) == 0)
@@ -842,13 +848,13 @@ namespace xx
             return err;
         }
 
-        public int ReadFrom<T>(DataReader data, out List<sbyte> v)
+        public int ReadFrom(DataReader data, out List<sbyte> v)
         {
             v = null;
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
             {
-                v = new List<sbyte>((int)len);
+                v = new List<sbyte>();
                 for (int i = 0; i < len; i++)
                 {
                     if ((err = data.ReadFiexd(out sbyte b)) == 0)
@@ -858,13 +864,13 @@ namespace xx
             return err;
         }
 
-        public int ReadFrom<T>(DataReader data, out List<bool> v)
+        public int ReadFrom(DataReader data, out List<bool> v)
         {
             v = null;
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
             {
-                v = new List<bool>((int)len);
+                v = new List<bool>();
                 for (int i = 0; i < len; i++)
                 {
                     if ((err = data.ReadFiexd(out bool b)) == 0)
@@ -874,13 +880,13 @@ namespace xx
             return err;
         }
 
-        public int ReadFrom<T>(DataReader data, out List<short> v)
+        public int ReadFrom(DataReader data, out List<short> v)
         {
             v = null;
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
             {
-                v = new List<short>((int)len);
+                v = new List<short>();
                 for (int i = 0; i < len; i++)
                 {
                     if ((err = data.ReadVarInteger(out short b)) == 0)
@@ -890,13 +896,13 @@ namespace xx
             return err;
         }
 
-        public int ReadFrom<T>(DataReader data, out List<ushort> v)
+        public int ReadFrom(DataReader data, out List<ushort> v)
         {
             v = null;
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
             {
-                v = new List<ushort>((int)len);
+                v = new List<ushort>();
                 for (int i = 0; i < len; i++)
                 {
                     if ((err = data.ReadVarInteger(out ushort b)) == 0)
@@ -906,13 +912,13 @@ namespace xx
             return err;
         }
 
-        public int ReadFrom<T>(DataReader data, out List<int> v)
+        public int ReadFrom(DataReader data, out List<int> v)
         {
             v = null;
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
             {
-                v = new List<int>((int)len);
+                v = new List<int>();
                 for (int i = 0; i < len; i++)
                 {
                     if ((err = data.ReadVarInteger(out int b)) == 0)
@@ -922,13 +928,13 @@ namespace xx
             return err;
         }
 
-        public int ReadFrom<T>(DataReader data, out List<uint> v)
+        public int ReadFrom(DataReader data, out List<uint> v)
         {
             v = null;
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
             {
-                v = new List<uint>((int)len);
+                v = new List<uint>();
                 for (int i = 0; i < len; i++)
                 {
                     if ((err = data.ReadVarInteger(out uint b)) == 0)
@@ -938,13 +944,13 @@ namespace xx
             return err;
         }
 
-        public int ReadFrom<T>(DataReader data, out List<long> v)
+        public int ReadFrom(DataReader data, out List<long> v)
         {
             v = null;
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
             {
-                v = new List<long>((int)len);
+                v = new List<long>();
                 for (int i = 0; i < len; i++)
                 {
                     if ((err = data.ReadVarInteger(out long b)) == 0)
@@ -954,13 +960,13 @@ namespace xx
             return err;
         }
 
-        public int ReadFrom<T>(DataReader data, out List<ulong> v)
+        public int ReadFrom(DataReader data, out List<ulong> v)
         {
             v = null;
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
             {
-                v = new List<ulong>((int)len);
+                v = new List<ulong>();
                 for (int i = 0; i < len; i++)
                 {
                     if ((err = data.ReadVarInteger(out ulong b)) == 0)
@@ -970,13 +976,13 @@ namespace xx
             return err;
         }
 
-        public int ReadFrom<T>(DataReader data, out List<string> v)
+        public int ReadFrom(DataReader data, out List<string> v)
         {
             v = null;
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
             {
-                v = new List<string>((int)len);
+                v = new List<string>();
                 for (int i = 0; i < len; i++)
                 {
                     if ((err = ReadFrom(data,out string b)) == 0)
@@ -989,13 +995,13 @@ namespace xx
 
 
 
-        public int ReadFrom<T>(DataReader data, out List<byte?> v)
+        public int ReadFrom(DataReader data, out List<byte?> v)
         {
             v = null;
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
             {
-                v = new List<byte?>((int)len);
+                v = new List<byte?>();
                 for (int i = 0; i < len; i++)
                 {
                     if ((err =ReadFrom(data,out byte? b)) == 0)
@@ -1005,13 +1011,13 @@ namespace xx
             return err;
         }
 
-        public int ReadFrom<T>(DataReader data, out List<sbyte?> v)
+        public int ReadFrom(DataReader data, out List<sbyte?> v)
         {
             v = null;
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
             {
-                v = new List<sbyte?>((int)len);
+                v = new List<sbyte?>();
                 for (int i = 0; i < len; i++)
                 {
                     if ((err = ReadFrom(data, out sbyte? b)) == 0)
@@ -1021,13 +1027,13 @@ namespace xx
             return err;
         }
 
-        public int ReadFrom<T>(DataReader data, out List<bool?> v)
+        public int ReadFrom(DataReader data, out List<bool?> v)
         {
             v = null;
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
             {
-                v = new List<bool?>((int)len);
+                v = new List<bool?>();
                 for (int i = 0; i < len; i++)
                 {
                     if ((err = ReadFrom(data,out bool? b)) == 0)
@@ -1037,13 +1043,13 @@ namespace xx
             return err;
         }
 
-        public int ReadFrom<T>(DataReader data, out List<short?> v)
+        public int ReadFrom(DataReader data, out List<short?> v)
         {
             v = null;
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
             {
-                v = new List<short?>((int)len);
+                v = new List<short?>();
                 for (int i = 0; i < len; i++)
                 {
                     if ((err = ReadFrom(data,out short? b)) == 0)
@@ -1053,13 +1059,13 @@ namespace xx
             return err;
         }
 
-        public int ReadFrom<T>(DataReader data, out List<ushort?> v)
+        public int ReadFrom(DataReader data, out List<ushort?> v)
         {
             v = null;
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
             {
-                v = new List<ushort?>((int)len);
+                v = new List<ushort?>();
                 for (int i = 0; i < len; i++)
                 {
                     if ((err = ReadFrom(data,out ushort? b)) == 0)
@@ -1069,13 +1075,13 @@ namespace xx
             return err;
         }
 
-        public int ReadFrom<T>(DataReader data, out List<int?> v)
+        public int ReadFrom(DataReader data, out List<int?> v)
         {
             v = null;
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
             {
-                v = new List<int?>((int)len);
+                v = new List<int?>();
                 for (int i = 0; i < len; i++)
                 {
                     if ((err = ReadFrom(data,out int? b)) == 0)
@@ -1085,13 +1091,13 @@ namespace xx
             return err;
         }
 
-        public int ReadFrom<T>(DataReader data, out List<uint?> v)
+        public int ReadFrom(DataReader data, out List<uint?> v)
         {
             v = null;
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
             {
-                v = new List<uint?>((int)len);
+                v = new List<uint?>();
                 for (int i = 0; i < len; i++)
                 {
                     if ((err = ReadFrom(data,out uint? b)) == 0)
@@ -1101,13 +1107,13 @@ namespace xx
             return err;
         }
 
-        public int ReadFrom<T>(DataReader data, out List<long?> v)
+        public int ReadFrom(DataReader data, out List<long?> v)
         {
             v = null;
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
             {
-                v = new List<long?>((int)len);
+                v = new List<long?>();
                 for (int i = 0; i < len; i++)
                 {
                     if ((err = ReadFrom(data,out long? b)) == 0)
@@ -1117,13 +1123,13 @@ namespace xx
             return err;
         }
 
-        public int ReadFrom<T>(DataReader data, out List<ulong?> v)
+        public int ReadFrom(DataReader data, out List<ulong?> v)
         {
             v = null;
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
             {
-                v = new List<ulong?>((int)len);
+                v = new List<ulong?>();
                 for (int i = 0; i < len; i++)
                 {
                     if ((err = ReadFrom(data,out ulong? b)) == 0)

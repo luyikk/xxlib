@@ -559,7 +559,7 @@ namespace xx
                     return -201;
                 uint b = buff[offset++];
                 v|=(ushort)((b & 0x7Fu) << shift);
-                if ((b & 80) == 0)                
+                if ((b & 0x80) == 0)                
                     return 0;                
             }
 
@@ -590,7 +590,7 @@ namespace xx
                     return -211;
                 uint b = buff[offset++];
                 v |= ((b & 0x7Fu) << shift);
-                if ((b & 80) == 0)
+                if ((b & 0x80) == 0)
                     return 0;
             }
 
@@ -623,7 +623,7 @@ namespace xx
                     return -221;
                 ulong b = buff[offset++];
                 v |= ((b & 0x7Fu) << shift);
-                if ((b & 80) == 0)
+                if ((b & 0x80) == 0)
                     return 0;
             }
 
@@ -648,10 +648,15 @@ namespace xx
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int ReadVarInteger(out string v)
         {
-            if(ReadVarInteger(out uint len) == 0)
+            v = "";
+
+            if (ReadVarInteger(out uint len) == 0)
             {
                 if (len > 0)
                 {
+                    if (len > this.len - offset)
+                        return -333;
+
                     byte[] data = new byte[len];
                     if (ReadBuf(data, 0, data.Length) == 0)
                     {
@@ -660,12 +665,10 @@ namespace xx
                     }
                 }
                 else
-                {
-                    v = "";
+                {                  
                     return 0;
                 }
-            }
-            v = null;
+            }           
             return -300;
         }
 
