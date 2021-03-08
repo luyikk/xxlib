@@ -3,6 +3,17 @@ using TemplateLibrary;
 
 
 
+namespace PKG.P
+{
+    [TypeId(12), Desc("Ponit")]
+    class Point
+    {
+        int X;
+        int Y;
+        float? Z;
+    }
+}
+
 
 namespace PKG
 {
@@ -16,13 +27,6 @@ namespace PKG
         string S2;
     }
 
-    [TypeId(12), Desc("Ponit")]
-    class Point
-    {
-        int X;
-        int Y;
-        float? Z;
-    }
 
     [TypeId(13), Desc("Foo"), Compatible]
     class Foo : Base
@@ -32,10 +36,10 @@ namespace PKG
         string P3;
         byte[] Buff;
         List<uint> Data;
-        Shared<Point> Position;
-        Shared<Point> Position2;
+        Shared<PKG.P.Point> Position;
+        Shared<PKG.P.Point> Position2;
         Shared<Foo> My;
-        List<Shared<Point>> Positions;
+        List<Shared<PKG.P.Point>> Positions;
     }
 
 }

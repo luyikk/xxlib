@@ -6,7 +6,7 @@ namespace Test
 {
     public static class PkgGenMd5
     {
-        public const string value = "#*MD5<5bee7f4eaf07b940dca8dec7c9b6e04a>*#"; 
+        public const string value = "#*MD5<d0deaa4845484871c9576655b8c2a7a1>*#"; 
     }    
 
     namespace PKG
@@ -66,6 +66,9 @@ namespace Test
                  data.WriteFiexdAt(bak, (uint)(data.Length - bak));
             }
         }
+    }
+    namespace PKG.P
+    {
 
          /// <summary>
          /// Ponit
@@ -106,6 +109,9 @@ namespace Test
                  om.WriteTo(data, this.Z);
             }
         }
+    }
+    namespace PKG
+    {
 
          /// <summary>
          /// Foo
@@ -123,13 +129,13 @@ namespace Test
 
              public List<uint> Data {get;set;}
 
-             public PKG.Point Position {get;set;}
+             public PKG.P.Point Position {get;set;}
 
-             public PKG.Point Position2 {get;set;}
+             public PKG.P.Point Position2 {get;set;}
 
              public PKG.Foo My {get;set;}
 
-             public List<PKG.Point> Positions {get;set;}
+             public List<PKG.P.Point> Positions {get;set;}
 
              public new ushort GetTypeid()=>13;
 
@@ -173,13 +179,13 @@ namespace Test
 
                  if (data.Offset > endoffset)
                      this.Position = default;
-                 else if ((err = om.ReadObj(data, out PKG.Point __position)) == 0)
+                 else if ((err = om.ReadObj(data, out PKG.P.Point __position)) == 0)
                      this.Position = __position;
                  else return err;
 
                  if (data.Offset > endoffset)
                      this.Position2 = default;
-                 else if ((err = om.ReadObj(data, out PKG.Point __position2)) == 0)
+                 else if ((err = om.ReadObj(data, out PKG.P.Point __position2)) == 0)
                      this.Position2 = __position2;
                  else return err;
 
@@ -191,7 +197,7 @@ namespace Test
 
                  if (data.Offset > endoffset)
                      this.Positions = default;
-                 else if ((err = om.ReadObj(data, out List<PKG.Point> __positions)) == 0)
+                 else if ((err = om.ReadObj(data, out List<PKG.P.Point> __positions)) == 0)
                      this.Positions = __positions;
                  else return err;
 
@@ -229,8 +235,8 @@ namespace Test
          public static void Register()
          {
              ObjManager.Register<PKG.Base>(11);
-             ObjManager.Register<PKG.Point>(12);
              ObjManager.Register<PKG.Foo>(13);
+             ObjManager.Register<PKG.P.Point>(12);
 
          }
     }

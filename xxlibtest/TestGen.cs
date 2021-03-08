@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Test.PKG;
 using xx;
+using Test.PKG.P;
 
 namespace xxlibtest
 {
