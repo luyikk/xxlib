@@ -29,10 +29,10 @@ namespace xx
         public static ISerde Create(int typeid) => typeIdCreatorMappings[typeid]();
 
         Lazy<Dictionary<ISerde, uint>> _ptrStore = new Lazy<Dictionary<ISerde, uint>>(System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
-        Lazy<Dictionary<uint, ISerde>> _idxStore = new Lazy<Dictionary<uint, ISerde>>(System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
+        Lazy<List<ISerde>> _idxStore = new Lazy<List<ISerde>>(System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
 
         public Dictionary<ISerde, uint> PtrStore => _ptrStore.Value;
-        public Dictionary<uint, ISerde> IdxStore => _idxStore.Value;
+        public List<ISerde> IdxStore => _idxStore.Value;
 
         #region WriteBase
         public void WriteTo(Data data, byte b)        
@@ -748,15 +748,15 @@ namespace xx
             {
                 if (offset == 0)
                     return 0;
-
-                if (!IdxStore.TryGetValue(offset, out var obj))
+               
+                if(offset == IdxStore.Count+1)
                 {
                     if ((err = data.ReadVarInteger(out ushort typeid)) == 0)
                     {
                         v = Create(typeid);
                         if (v != null)
                         {
-                            IdxStore.Add(offset, v);
+                            IdxStore.Add(v);
                             return v.Read(this, data);
                         }
                         else
@@ -765,7 +765,10 @@ namespace xx
                 }
                 else
                 {
-                    v = obj;
+                    if(offset> IdxStore.Count)
+                        throw new KeyNotFoundException($"offset :{offset} error");
+
+                    v = IdxStore[(int)offset - 1];
                     if (v != null)
                         return 0;
                     else
@@ -791,14 +794,14 @@ namespace xx
                 if (offset == 0)
                     return 0;
 
-                if (!IdxStore.TryGetValue(offset, out var obj))
+                if (offset == IdxStore.Count + 1)
                 {
                     if ((err = data.ReadVarInteger(out ushort typeid)) == 0)
                     {
                         v = Create(typeid) as T;
                         if (v != null)
                         {
-                            IdxStore.Add(offset, v);
+                            IdxStore.Add(v);
                             return v.Read(this, data);                            
                         }
                         else
@@ -807,7 +810,10 @@ namespace xx
                 }
                 else
                 {
-                    v = obj as T;
+                    if (offset > IdxStore.Count)
+                        throw new KeyNotFoundException($"offset :{offset} error");
+
+                    v = IdxStore[(int)offset - 1] as T;
                     if (v != null)
                         return 0;
                     else
