@@ -230,6 +230,11 @@ namespace xx
         #region WriteArray
         public void WriteTo(Data data,byte[] v)
         {
+            if(v is null)
+            {
+                data.WriteFiexd((byte)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Length);
             data.WriteBuf(v);
         }
@@ -237,7 +242,11 @@ namespace xx
         public void WriteTo<T>(Data data,T[] v) where T : class, ISerde, new()
         {
             this.PtrStore.Clear();
+            WriteObj(data, v);
+        }
 
+        public void WriteObj<T>(Data data, T[] v) where T : class, ISerde, new()
+        {          
             data.WriteVarInteger((uint)v.Length);
             foreach (var p in v)
                 WriteObj(data, p);
@@ -251,16 +260,30 @@ namespace xx
         public void WriteTo<S>(Data data,List<S> v) where S:class,ISerde,new()
         {
             this.PtrStore.Clear();
+            WriteObj(data, v);
+        }
 
+        public void WriteObj<S>(Data data, List<S> v) where S : class, ISerde, new()
+        {
+            if(v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
-                WriteObj(data, p);           
+                WriteObj(data, p);
         }
 
         #region ListBase
 
         public void WriteTo(Data data, List<byte> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 data.WriteFiexd(p);
@@ -268,6 +291,11 @@ namespace xx
 
         public void WriteTo(Data data, List<sbyte> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 data.WriteFiexd(p);
@@ -275,6 +303,11 @@ namespace xx
 
         public void WriteTo(Data data, List<bool> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 data.WriteFiexd(p);
@@ -282,6 +315,11 @@ namespace xx
 
         public void WriteTo(Data data, List<short> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 data.WriteVarInteger(p);
@@ -289,6 +327,11 @@ namespace xx
 
         public void WriteTo(Data data, List<ushort> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 data.WriteVarInteger(p);
@@ -296,6 +339,11 @@ namespace xx
 
         public void WriteTo(Data data, List<int> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 data.WriteVarInteger(p);
@@ -303,6 +351,11 @@ namespace xx
 
         public void WriteTo(Data data, List<uint> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 data.WriteVarInteger(p);
@@ -310,6 +363,11 @@ namespace xx
 
         public void WriteTo(Data data, List<long> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 data.WriteVarInteger(p);
@@ -317,6 +375,11 @@ namespace xx
 
         public void WriteTo(Data data, List<ulong> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 data.WriteVarInteger(p);
@@ -324,6 +387,11 @@ namespace xx
 
         public void WriteTo(Data data, List<double> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 data.WriteFiexd(p);
@@ -331,6 +399,11 @@ namespace xx
 
         public void WriteTo(Data data, List<float> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 data.WriteFiexd(p);
@@ -338,6 +411,11 @@ namespace xx
 
         public void WriteTo(Data data, List<string> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 this.WriteTo(data, p);
@@ -349,6 +427,11 @@ namespace xx
 
         public void WriteTo(Data data, List<byte?> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 WriteTo(data,p);
@@ -356,6 +439,11 @@ namespace xx
 
         public void WriteTo(Data data, List<sbyte?> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 WriteTo(data, p);
@@ -363,6 +451,11 @@ namespace xx
 
         public void WriteTo(Data data, List<bool?> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 WriteTo(data, p);
@@ -370,6 +463,11 @@ namespace xx
 
         public void WriteTo(Data data, List<short?> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 WriteTo(data, p);
@@ -377,6 +475,11 @@ namespace xx
 
         public void WriteTo(Data data, List<ushort?> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 WriteTo(data, p);
@@ -384,6 +487,11 @@ namespace xx
 
         public void WriteTo(Data data, List<int?> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 WriteTo(data, p);
@@ -391,6 +499,11 @@ namespace xx
 
         public void WriteTo(Data data, List<uint?> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 WriteTo(data, p);
@@ -398,6 +511,11 @@ namespace xx
 
         public void WriteTo(Data data, List<long?> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 WriteTo(data, p);
@@ -405,6 +523,11 @@ namespace xx
 
         public void WriteTo(Data data, List<ulong?> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 WriteTo(data, p);
@@ -412,6 +535,11 @@ namespace xx
 
         public void WriteTo(Data data, List<double?> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 WriteTo(data, p);
@@ -419,6 +547,11 @@ namespace xx
 
         public void WriteTo(Data data, List<float?> v)
         {
+            if (v is null)
+            {
+                data.WriteVarInteger((uint)0);
+                return;
+            }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
                 WriteTo(data, p);
@@ -846,6 +979,11 @@ namespace xx
         public int ReadFrom<T>(DataReader data, out T[] v) where T : class, ISerde, new()
         {
             IdxStore.Clear();
+            return ReadObj(data, out v);
+        }
+
+        public int ReadObj<T>(DataReader data, out T[] v) where T : class, ISerde, new()
+        {
             v = null;
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
@@ -866,10 +1004,15 @@ namespace xx
 
         #endregion
 
-        #region ReadList
+            #region ReadList
         public int ReadFrom<T>(DataReader data, out List<T> v) where T : class, ISerde, new()
         {
             IdxStore.Clear();
+            return ReadObj(data, out v);
+        }
+
+        public int ReadObj<T>(DataReader data, out List<T> v) where T : class, ISerde, new()
+        {
             v = null;
             var err = data.ReadVarInteger(out uint len);
             if (err == 0)
@@ -1043,9 +1186,6 @@ namespace xx
             }
             return err;
         }
-
-
-
 
         public int ReadFrom(DataReader data, out List<byte?> v)
         {

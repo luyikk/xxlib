@@ -272,6 +272,7 @@ namespace xxlibtest
             public Ponit Position { get; set; }
             public Ponit Position2 { get; set; }
             public Foo My { get; set; }
+            public List<Ponit> Positions { get; set; }
 
             public new ushort GetTypeid()
             {
@@ -280,51 +281,84 @@ namespace xxlibtest
 
             public new int Read(ObjManager om, DataReader data)
             {
+                //base.Read(om, data);
+                //int err;
+                //if ((err = data.ReadFiexd(out uint siz)) != 0) return err;
+                //int endoffset = (int)(data.Offset - sizeof(uint) + siz);
+
+                //if (data.Offset > endoffset)
+                //    P1 = default;
+                //else if ((err = om.ReadFrom(data, out int __p1)) == 0)
+                //    P1 = __p1;
+                //else return err;
+
+                //if (data.Offset > endoffset)
+                //    P2 = default;
+                //else if ((err = om.ReadFrom(data, out float __p2)) == 0)
+                //    P2 = __p2;
+                //else return err;
+
+                //if (data.Offset > endoffset)
+                //    P3 = default;
+                //else if ((err = om.ReadFrom(data, out string __p3)) == 0)
+                //    P3 = __p3;
+                //else return err;
+
+                //if (data.Offset > endoffset)
+                //    Position = default;
+                //else if ((err = om.ReadObj(data, out Ponit __position)) == 0)
+                //    Position = __position;
+                //else return err;
+
+                //if (data.Offset > endoffset)
+                //    Position2 = default;
+                //else if ((err = om.ReadObj(data, out Ponit __position2)) == 0)
+                //    Position2 = __position2;
+                //else return err;
+
+                //if (data.Offset > endoffset)
+                //    My = default;
+                //else if ((err = om.ReadObj(data, out Foo __foo)) == 0)
+                //    My = __foo;
+                //else return err;
+
+                //if (data.Offset > endoffset)
+                //    throw new IndexOutOfRangeException($"typeid:{GetTypeid()} class:Foo offset error");
+                //else
+                //    data.Offset = endoffset;
+
+                //return 0;
+
+
                 base.Read(om, data);
                 int err;
-                if ((err = data.ReadFiexd(out uint siz)) != 0) return err;
-                int endoffset = (int)(data.Offset - sizeof(uint) + siz);
-
-                if (data.Offset > endoffset)
-                    P1 = default;
-                else if ((err = om.ReadFrom(data, out int __p1)) == 0)
+                if ((err = om.ReadFrom(data, out int __p1)) == 0)
                     P1 = __p1;
                 else return err;
 
-                if (data.Offset > endoffset)
-                    P2 = default;
-                else if ((err = om.ReadFrom(data, out float __p2)) == 0)
+                if ((err = om.ReadFrom(data, out float __p2)) == 0)
                     P2 = __p2;
                 else return err;
 
-                if (data.Offset > endoffset)
-                    P3 = default;
-                else if ((err = om.ReadFrom(data, out string __p3)) == 0)
+                if ((err = om.ReadFrom(data, out string __p3)) == 0)
                     P3 = __p3;
                 else return err;
 
-                if (data.Offset > endoffset)
-                    Position = default;
-                else if ((err = om.ReadObj(data, out Ponit __position)) == 0)
+                if ((err = om.ReadObj(data, out Ponit __position)) == 0)
                     Position = __position;
                 else return err;
 
-                if (data.Offset > endoffset)
-                    Position2 = default;
-                else if ((err = om.ReadObj(data, out Ponit __position2)) == 0)
+                if ((err = om.ReadObj(data, out Ponit __position2)) == 0)
                     Position2 = __position2;
                 else return err;
 
-                if (data.Offset > endoffset)
-                    My = default;
-                else if ((err = om.ReadObj(data, out Foo __foo)) == 0)
+                if ((err = om.ReadObj(data, out Foo __foo)) == 0)
                     My = __foo;
                 else return err;
 
-                if (data.Offset > endoffset)
-                    throw new IndexOutOfRangeException($"typeid:{GetTypeid()} class:Foo offset error");
-                else
-                    data.Offset = endoffset;
+                if ((err = om.ReadObj(data, out List<Ponit> __positions)) == 0)
+                    Positions = __positions;
+                else return err;
 
                 return 0;
             }
@@ -333,15 +367,24 @@ namespace xxlibtest
             {
                 base.Write(om, data);
 
-                var bak = data.Length;
-                data.WriteFiexd(sizeof(uint));
+                //var bak = data.Length;
+                //data.WriteFiexd(sizeof(uint));
+                //om.WriteTo(data, this.P1);
+                //om.WriteTo(data, this.P2);
+                //om.WriteTo(data, this.P3);
+                //om.WriteObj(data, this.Position);
+                //om.WriteObj(data, this.Position2);
+                //om.WriteObj(data, this.My);
+                //data.WriteFiexdAt(bak, (uint)(data.Length - bak));
+
+
                 om.WriteTo(data, this.P1);
                 om.WriteTo(data, this.P2);
                 om.WriteTo(data, this.P3);
                 om.WriteObj(data, this.Position);
                 om.WriteObj(data, this.Position2);
                 om.WriteObj(data, this.My);
-                data.WriteFiexdAt(bak, (uint)(data.Length - bak));
+                om.WriteObj(data, this.Positions);
             }
         }
 
@@ -368,12 +411,17 @@ namespace xxlibtest
                     {
                         X = 100,
                         Y = 200
-                    }
+                    },
+
+                  
                 };
 
                 foo.Position2 = foo.Position;
                 foo.My = foo;
-
+                foo.Positions = new List<Ponit>
+                {
+                    foo.Position,foo.Position
+                };
 
                 objmanager.WriteTo(data, foo);
                 var (buff, len) = data.ToArray();
@@ -389,6 +437,7 @@ namespace xxlibtest
                 Assert.True(foo.Position.Y == a.Position.Y);
                 Assert.True(foo.Position2.X == a.Position2.X);
                 Assert.True(foo.Position2.Y == a.Position2.Y);
+                Assert.True(foo.Positions.Count == a.Positions.Count);
                 Assert.Equal(a, a.My);
 
 
@@ -429,7 +478,7 @@ namespace xxlibtest
                     {
                         X = 100,
                         Y = 200
-                    }
+                    }                   
                 };
 
                 foo.Position2 = foo.Position;
