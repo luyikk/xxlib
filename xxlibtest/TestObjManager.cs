@@ -234,13 +234,13 @@ namespace xxlibtest
                 if ((err = data.ReadFiexd(out uint siz)) != 0) return err;
                 int endoffset = (int)(data.Offset - sizeof(uint) + siz);
 
-                if (data.Offset > endoffset)
+                if (data.Offset >= endoffset)
                     X = default;
                 else if ((err = om.ReadFrom(data, out int __x)) == 0)
                     X = __x;
                 else return err;
 
-                if (data.Offset > endoffset)
+                if (data.Offset >= endoffset)
                     Y = default;
                 else if ((err = om.ReadFrom(data, out int __y)) == 0)
                     Y = __y;
@@ -286,37 +286,37 @@ namespace xxlibtest
                 //if ((err = data.ReadFiexd(out uint siz)) != 0) return err;
                 //int endoffset = (int)(data.Offset - sizeof(uint) + siz);
 
-                //if (data.Offset > endoffset)
+                //if (data.Offset >= endoffset)
                 //    P1 = default;
                 //else if ((err = om.ReadFrom(data, out int __p1)) == 0)
                 //    P1 = __p1;
                 //else return err;
 
-                //if (data.Offset > endoffset)
+                //if (data.Offset >= endoffset)
                 //    P2 = default;
                 //else if ((err = om.ReadFrom(data, out float __p2)) == 0)
                 //    P2 = __p2;
                 //else return err;
 
-                //if (data.Offset > endoffset)
+                //if (data.Offset >= endoffset)
                 //    P3 = default;
                 //else if ((err = om.ReadFrom(data, out string __p3)) == 0)
                 //    P3 = __p3;
                 //else return err;
 
-                //if (data.Offset > endoffset)
+                //if (data.Offset >= endoffset)
                 //    Position = default;
                 //else if ((err = om.ReadObj(data, out Ponit __position)) == 0)
                 //    Position = __position;
                 //else return err;
 
-                //if (data.Offset > endoffset)
+                //if (data.Offset >= endoffset)
                 //    Position2 = default;
                 //else if ((err = om.ReadObj(data, out Ponit __position2)) == 0)
                 //    Position2 = __position2;
                 //else return err;
 
-                //if (data.Offset > endoffset)
+                //if (data.Offset >= endoffset)
                 //    My = default;
                 //else if ((err = om.ReadObj(data, out Foo __foo)) == 0)
                 //    My = __foo;

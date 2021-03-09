@@ -6,7 +6,7 @@ namespace Test
 {
     public static class PkgGenMd5
     {
-        public const string value = "#*MD5<d0deaa4845484871c9576655b8c2a7a1>*#"; 
+        public const string value = "#*MD5<baa8ebc01fe9e6b1be5aa362cdbadf30>*#"; 
     }    
 
     namespace PKG
@@ -36,13 +36,13 @@ namespace Test
                  if ((err = data.ReadFiexd(out uint siz)) != 0) return err;
                  int endoffset = (int)(data.Offset - sizeof(uint) + siz);
 
-                 if (data.Offset > endoffset)
+                 if (data.Offset >= endoffset)
                      this.S1 = default;
                  else if ((err = om.ReadFrom(data, out int __s1)) == 0)
                      this.S1 = __s1;
                  else return err;
 
-                 if (data.Offset > endoffset)
+                 if (data.Offset >= endoffset)
                      this.S2 = default;
                  else if ((err = om.ReadFrom(data, out string __s2)) == 0)
                      this.S2 = __s2;
@@ -147,55 +147,55 @@ namespace Test
                  if ((err = data.ReadFiexd(out uint siz)) != 0) return err;
                  int endoffset = (int)(data.Offset - sizeof(uint) + siz);
 
-                 if (data.Offset > endoffset)
+                 if (data.Offset >= endoffset)
                      this.P1 = default;
                  else if ((err = om.ReadFrom(data, out int __p1)) == 0)
                      this.P1 = __p1;
                  else return err;
 
-                 if (data.Offset > endoffset)
+                 if (data.Offset >= endoffset)
                      this.P2 = default;
                  else if ((err = om.ReadFrom(data, out float __p2)) == 0)
                      this.P2 = __p2;
                  else return err;
 
-                 if (data.Offset > endoffset)
+                 if (data.Offset >= endoffset)
                      this.P3 = default;
                  else if ((err = om.ReadFrom(data, out string __p3)) == 0)
                      this.P3 = __p3;
                  else return err;
 
-                 if (data.Offset > endoffset)
+                 if (data.Offset >= endoffset)
                      this.Buff = default;
                  else if ((err = om.ReadFrom(data, out byte[] __buff)) == 0)
                      this.Buff = __buff;
                  else return err;
 
-                 if (data.Offset > endoffset)
+                 if (data.Offset >= endoffset)
                      this.Data = default;
                  else if ((err = om.ReadFrom(data, out List<uint> __data)) == 0)
                      this.Data = __data;
                  else return err;
 
-                 if (data.Offset > endoffset)
+                 if (data.Offset >= endoffset)
                      this.Position = default;
                  else if ((err = om.ReadObj(data, out PKG.P.Point __position)) == 0)
                      this.Position = __position;
                  else return err;
 
-                 if (data.Offset > endoffset)
+                 if (data.Offset >= endoffset)
                      this.Position2 = default;
                  else if ((err = om.ReadObj(data, out PKG.P.Point __position2)) == 0)
                      this.Position2 = __position2;
                  else return err;
 
-                 if (data.Offset > endoffset)
+                 if (data.Offset >= endoffset)
                      this.My = default;
                  else if ((err = om.ReadObj(data, out PKG.Foo __my)) == 0)
                      this.My = __my;
                  else return err;
 
-                 if (data.Offset > endoffset)
+                 if (data.Offset >= endoffset)
                      this.Positions = default;
                  else if ((err = om.ReadObj(data, out List<PKG.P.Point> __positions)) == 0)
                      this.Positions = __positions;

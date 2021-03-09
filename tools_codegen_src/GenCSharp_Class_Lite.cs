@@ -133,7 +133,7 @@ $@"
                 else
                 {
                     sb.Append($@"
-                 if (data.Offset > endoffset)
+                 if (data.Offset >= endoffset)
                      this.{f.Name} = default;
                  else if ((err = om.{(f.FieldType._IsShared()? "ReadObj" : (f.FieldType._IsListShared()? "ReadObj": "ReadFrom"))}(data, out {f.FieldType._GetTypeDecl_Csharp()} __{f.Name.ToLower()})) == 0)
                      this.{f.Name} = __{f.Name.ToLower()};
