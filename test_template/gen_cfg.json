@@ -1,0 +1,6 @@
+{
+  "refs": [],
+  "name": "Test",
+  "files": [ "./master.cs" ],
+  "outdir_cs": "../xxlibtest/"
+}

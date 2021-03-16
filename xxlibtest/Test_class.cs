@@ -6,7 +6,7 @@ namespace Test
 {
     public static class PkgGenMd5
     {
-        public const string value = "#*MD5<baa8ebc01fe9e6b1be5aa362cdbadf30>*#"; 
+        public const string value = "#*MD5<196d8a0c761b5aa3c221248b3e61f209>*#"; 
     }    
 
     namespace PKG
@@ -66,52 +66,6 @@ namespace Test
                  data.WriteFiexdAt(bak, (uint)(data.Length - bak));
             }
         }
-    }
-    namespace PKG.P
-    {
-
-         /// <summary>
-         /// Ponit
-         /// </summary>
-         public class Point :ISerde
-         { 
-
-             public int X {get;set;}
-
-             public int Y {get;set;}
-
-             public float? Z {get;set;}
-
-             public ushort GetTypeid()=>12;
-
-             public int Read(ObjManager om, DataReader data)
-             {
-                 int err;
-                 if ((err = om.ReadFrom(data, out int __x)) == 0)
-                    this.X = __x;
-                 else return err;
-
-                 if ((err = om.ReadFrom(data, out int __y)) == 0)
-                    this.Y = __y;
-                 else return err;
-
-                 if ((err = om.ReadFrom(data, out float? __z)) == 0)
-                    this.Z = __z;
-                 else return err;
-
-                 return 0;
-            }
-
-            public void Write(ObjManager om, Data data)
-            {
-                 om.WriteTo(data, this.X);
-                 om.WriteTo(data, this.Y);
-                 om.WriteTo(data, this.Z);
-            }
-        }
-    }
-    namespace PKG
-    {
 
          /// <summary>
          /// Foo
@@ -226,6 +180,49 @@ namespace Test
                  om.WriteObj(data, this.Positions);
 
                  data.WriteFiexdAt(bak, (uint)(data.Length - bak));
+            }
+        }
+    }
+    namespace PKG.P
+    {
+
+         /// <summary>
+         /// Ponit
+         /// </summary>
+         public class Point :ISerde
+         { 
+
+             public int X {get;set;}
+
+             public int Y {get;set;}
+
+             public double? Z {get;set;}
+
+             public ushort GetTypeid()=>12;
+
+             public int Read(ObjManager om, DataReader data)
+             {
+                 int err;
+                 if ((err = om.ReadFrom(data, out int __x)) == 0)
+                    this.X = __x;
+                 else return err;
+
+                 if ((err = om.ReadFrom(data, out int __y)) == 0)
+                    this.Y = __y;
+                 else return err;
+
+                 if ((err = om.ReadFrom(data, out double? __z)) == 0)
+                    this.Z = __z;
+                 else return err;
+
+                 return 0;
+            }
+
+            public void Write(ObjManager om, Data data)
+            {
+                 om.WriteTo(data, this.X);
+                 om.WriteTo(data, this.Y);
+                 om.WriteTo(data, this.Z);
             }
         }
     }

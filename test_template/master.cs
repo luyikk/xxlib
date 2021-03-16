@@ -1,5 +1,4 @@
-﻿using System;
-using TemplateLibrary;
+﻿using TemplateLibrary;
 
 
 
@@ -10,7 +9,7 @@ namespace PKG.P
     {
         int X;
         int Y;
-        float? Z;
+        double? Z;
     }
 }
 
