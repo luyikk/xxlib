@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "tools_codegen_src": {
-      "commandName": "Project",
-      "commandLineArgs": "Test ../../../../xxlibtest ../../../../test_template/master.cs"
-    }
-  }
-}
