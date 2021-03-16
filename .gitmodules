@@ -1,0 +1,3 @@
+[submodule "pkggen"]
+        path = xxlib_codegen
+        url = https://github.com/luyikk/xxlib_codegen.git
