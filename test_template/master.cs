@@ -1,4 +1,5 @@
-﻿using TemplateLibrary;
+﻿#pragma warning disable CS0169
+using TemplateLibrary;
 
 
 
