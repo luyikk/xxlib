@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Test.PKG;
-using Test.PKG.P;
+using PKG;
+using PKG.P;
 using Xunit;
 using xx;
 
@@ -12,7 +12,7 @@ namespace xxlibtest
         [Fact]
         public void test_gen()
         {
-            Test.AllTypes.Register();
+            CodeGen_Test.Register();
             {
                 var data = new xx.Data();
                 var objmanager = new ObjManager();
