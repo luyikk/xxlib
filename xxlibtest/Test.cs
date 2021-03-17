@@ -54,6 +54,52 @@ namespace PKG
             data.WriteFiexdAt(bak, (uint)(data.Length - bak));
         }
     }
+}
+
+namespace PKG.P
+{
+    /// <summary>
+    /// Ponit
+    /// </summary>
+    public partial class Point : xx.ISerde
+    {
+        public int X { get; set; }
+
+        public int Y { get; set; }
+
+        public double? Z { get; set; }
+
+        public ushort GetTypeid() => 12;
+
+        public int Read(xx.ObjManager om, xx.DataReader data)
+        {
+            int err;
+            if ((err = om.ReadFrom(data, out int __x)) == 0)
+            this.X = __x;
+            else return err;
+
+            if ((err = om.ReadFrom(data, out int __y)) == 0)
+            this.Y = __y;
+            else return err;
+
+            if ((err = om.ReadFrom(data, out double? __z)) == 0)
+            this.Z = __z;
+            else return err;
+
+            return 0;
+        }
+
+        public void Write(xx.ObjManager om, xx.Data data)
+        {
+            om.WriteTo(data, this.X);
+            om.WriteTo(data, this.Y);
+            om.WriteTo(data, this.Z);
+        }
+    }
+}
+
+namespace PKG
+{
     /// <summary>
     /// Foo
     /// </summary>
@@ -167,56 +213,14 @@ namespace PKG
     }
 }
 
-namespace PKG.P
-{
-    /// <summary>
-    /// Ponit
-    /// </summary>
-    public partial class Point : xx.ISerde
-    {
-        public int X { get; set; }
-
-        public int Y { get; set; }
-
-        public double? Z { get; set; }
-
-        public ushort GetTypeid() => 12;
-
-        public int Read(xx.ObjManager om, xx.DataReader data)
-        {
-            int err;
-            if ((err = om.ReadFrom(data, out int __x)) == 0)
-            this.X = __x;
-            else return err;
-
-            if ((err = om.ReadFrom(data, out int __y)) == 0)
-            this.Y = __y;
-            else return err;
-
-            if ((err = om.ReadFrom(data, out double? __z)) == 0)
-            this.Z = __z;
-            else return err;
-
-            return 0;
-        }
-
-        public void Write(xx.ObjManager om, xx.Data data)
-        {
-            om.WriteTo(data, this.X);
-            om.WriteTo(data, this.Y);
-            om.WriteTo(data, this.Z);
-        }
-    }
-}
-
 
 public static partial class CodeGen_Test
 {
-    public const string md5 = "#*MD5<dc5233b4a3f8e0f7cef09dc9d4b391ab>*#"; 
+    public const string md5 = "#*MD5<c41757fc3b6822662a122fb2d6270f7c>*#"; 
     public static void Register()
     {
          xx.ObjManager.Register<PKG.Base>(11);
-         xx.ObjManager.Register<PKG.Foo>(13);
          xx.ObjManager.Register<PKG.P.Point>(12);
+         xx.ObjManager.Register<PKG.Foo>(13);
     }
 }
