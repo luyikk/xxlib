@@ -17,7 +17,6 @@ namespace xxlibtest
                 var data = new xx.Data();
                 var objmanager = new ObjManager();
 
-
                 var foo = new Foo
                 {
                     S1 = 555,
@@ -44,6 +43,16 @@ namespace xxlibtest
                     foo.Position,foo.Position
                 };
 
+                foo.sp1.x = 1;
+                foo.sp1.y = 2;
+                foo.sp1.z = 3;
+                foo.px = 100;
+
+                foo.sp3 = new Point3();
+                foo.sp3.x = 1;
+                foo.sp3.y = 2;
+                foo.sp3.z = 3;
+
                 objmanager.WriteTo(data, foo);
                 var (buff, len) = data.ToArray();
 
@@ -69,6 +78,18 @@ namespace xxlibtest
                 Assert.Equal(foo.Data, a.Data);
                 Assert.Equal(a, a.My);
 
+                Assert.Equal(1, a.sp1.x);
+                Assert.Equal(2, a.sp1.y);
+                Assert.Equal(3, a.sp1.z);
+
+                Assert.Null(a.sp2);
+
+                Assert.Equal(1, a.sp3.x);
+                Assert.Equal(2, a.sp3.y);
+                Assert.Equal(3, a.sp3.z);
+
+
+                Assert.Equal(100, a.px);
 
                 read.Offset = 0;
 

@@ -11,6 +11,7 @@ namespace xxlibtest
         public void test_objmanager_wr()
         {
             {
+
                 var data = new xx.Data();
                 var objmanager = new ObjManager();
 
@@ -167,6 +168,113 @@ namespace xxlibtest
 
 
 
+        public class StructOne
+        {
+            public int S1 { get; set; }
+            public string S2 { get; set; }
+
+            public int Read(ObjManager om, DataReader data)
+            {
+                int err;
+                if ((err = data.ReadFiexd(out uint siz)) != 0) return err;
+                int endoffset = (int)(data.Offset - sizeof(uint) + siz);
+
+                if (data.Offset > endoffset)
+                    S1 = default;
+                else if ((err = om.ReadFrom(data, out int __s1)) == 0)
+                    S1 = __s1;
+                else return err;
+
+
+                if (data.Offset > endoffset)
+                    S2 = default;
+                else if ((err = om.ReadFrom(data, out string __s2)) == 0)
+                    S2 = __s2;
+                else return err;
+
+
+                if (data.Offset > endoffset)
+                    throw new IndexOutOfRangeException($"Struct: StructOne offset error");
+                else
+                    data.Offset = endoffset;
+
+                return 0;
+            }
+
+
+            public void Write(ObjManager om, Data data)
+            {
+                var bak = data.Length;
+                data.WriteFiexd(sizeof(uint));
+                om.WriteTo(data, this.S1);
+                om.WriteTo(data, this.S2);
+                data.WriteFiexdAt(bak, (uint)(data.Length - bak));
+            }
+
+        }
+
+
+        public class StructTow : StructOne
+        {
+            public int P1 { get; set; }
+            public float P2 { get; set; }
+            public string P3 { get; set; }
+            public Ponit Position { get; set; }
+            public Ponit Position2 { get; set; }
+            public Foo My { get; set; }
+            public List<Ponit> Positions { get; set; }
+
+            public new int Read(ObjManager om, DataReader data)
+            {
+                base.Read(om, data);
+                int err;
+                if ((err = om.ReadFrom(data, out int __p1)) == 0)
+                    P1 = __p1;
+                else return err;
+
+                if ((err = om.ReadFrom(data, out float __p2)) == 0)
+                    P2 = __p2;
+                else return err;
+
+                if ((err = om.ReadFrom(data, out string __p3)) == 0)
+                    P3 = __p3;
+                else return err;
+
+                if ((err = om.ReadObj(data, out Ponit __position)) == 0)
+                    Position = __position;
+                else return err;
+
+                if ((err = om.ReadObj(data, out Ponit __position2)) == 0)
+                    Position2 = __position2;
+                else return err;
+
+                if ((err = om.ReadObj(data, out Foo __foo)) == 0)
+                    My = __foo;
+                else return err;
+
+                if ((err = om.ReadObj(data, out List<Ponit> __positions)) == 0)
+                    Positions = __positions;
+                else return err;
+
+                return 0;
+            }
+
+            public new void Write(ObjManager om, Data data)
+            {
+                base.Write(om, data);
+
+                om.WriteTo(data, this.P1);
+                om.WriteTo(data, this.P2);
+                om.WriteTo(data, this.P3);
+                om.WriteObj(data, this.Position);
+                om.WriteObj(data, this.Position2);
+                om.WriteObj(data, this.My);
+                om.WriteObj(data, this.Positions);
+            }
+
+        }
+
+
         public class Base : ISerde
         {
             public int S1 { get; set; }
@@ -271,6 +379,12 @@ namespace xxlibtest
             public Foo My { get; set; }
             public List<Ponit> Positions { get; set; }
 
+            public StructOne ST1 { get; set; } = new StructOne();
+
+            public StructTow ST2 { get; set; } = new StructTow();
+
+            public StructOne ST3 { get; set; }
+
             public new ushort GetTypeid()
             {
                 return 1000;
@@ -278,103 +392,141 @@ namespace xxlibtest
 
             public new int Read(ObjManager om, DataReader data)
             {
-                //base.Read(om, data);
-                //int err;
-                //if ((err = data.ReadFiexd(out uint siz)) != 0) return err;
-                //int endoffset = (int)(data.Offset - sizeof(uint) + siz);
-
-                //if (data.Offset >= endoffset)
-                //    P1 = default;
-                //else if ((err = om.ReadFrom(data, out int __p1)) == 0)
-                //    P1 = __p1;
-                //else return err;
-
-                //if (data.Offset >= endoffset)
-                //    P2 = default;
-                //else if ((err = om.ReadFrom(data, out float __p2)) == 0)
-                //    P2 = __p2;
-                //else return err;
-
-                //if (data.Offset >= endoffset)
-                //    P3 = default;
-                //else if ((err = om.ReadFrom(data, out string __p3)) == 0)
-                //    P3 = __p3;
-                //else return err;
-
-                //if (data.Offset >= endoffset)
-                //    Position = default;
-                //else if ((err = om.ReadObj(data, out Ponit __position)) == 0)
-                //    Position = __position;
-                //else return err;
-
-                //if (data.Offset >= endoffset)
-                //    Position2 = default;
-                //else if ((err = om.ReadObj(data, out Ponit __position2)) == 0)
-                //    Position2 = __position2;
-                //else return err;
-
-                //if (data.Offset >= endoffset)
-                //    My = default;
-                //else if ((err = om.ReadObj(data, out Foo __foo)) == 0)
-                //    My = __foo;
-                //else return err;
-
-                //if (data.Offset > endoffset)
-                //    throw new IndexOutOfRangeException($"typeid:{GetTypeid()} class:Foo offset error");
-                //else
-                //    data.Offset = endoffset;
-
-                //return 0;
-
-
                 base.Read(om, data);
                 int err;
-                if ((err = om.ReadFrom(data, out int __p1)) == 0)
+                if ((err = data.ReadFiexd(out uint siz)) != 0) return err;
+                int endoffset = (int)(data.Offset - sizeof(uint) + siz);
+
+                if (data.Offset >= endoffset)
+                    P1 = default;
+                else if ((err = om.ReadFrom(data, out int __p1)) == 0)
                     P1 = __p1;
                 else return err;
 
-                if ((err = om.ReadFrom(data, out float __p2)) == 0)
+                if (data.Offset >= endoffset)
+                    P2 = default;
+                else if ((err = om.ReadFrom(data, out float __p2)) == 0)
                     P2 = __p2;
                 else return err;
 
-                if ((err = om.ReadFrom(data, out string __p3)) == 0)
+                if (data.Offset >= endoffset)
+                    P3 = default;
+                else if ((err = om.ReadFrom(data, out string __p3)) == 0)
                     P3 = __p3;
                 else return err;
 
-                if ((err = om.ReadObj(data, out Ponit __position)) == 0)
+                if (data.Offset >= endoffset)
+                    Position = default;
+                else if ((err = om.ReadObj(data, out Ponit __position)) == 0)
                     Position = __position;
                 else return err;
 
-                if ((err = om.ReadObj(data, out Ponit __position2)) == 0)
+                if (data.Offset >= endoffset)
+                    Position2 = default;
+                else if ((err = om.ReadObj(data, out Ponit __position2)) == 0)
                     Position2 = __position2;
                 else return err;
 
-                if ((err = om.ReadObj(data, out Foo __foo)) == 0)
+                if (data.Offset >= endoffset)
+                    My = default;
+                else if ((err = om.ReadObj(data, out Foo __foo)) == 0)
                     My = __foo;
                 else return err;
 
-                if ((err = om.ReadObj(data, out List<Ponit> __positions)) == 0)
+                if (data.Offset >= endoffset)
+                    Positions = default;
+                else if ((err = om.ReadObj(data, out List<Ponit> __positions)) == 0)
                     Positions = __positions;
                 else return err;
 
+
+                if (data.Offset < endoffset && (err = ST1.Read(om, data)) != 0)
+                     return err;
+
+                if (data.Offset < endoffset && (err = ST2.Read(om, data)) != 0)
+                    return err;
+
+                if (data.Offset < endoffset && (err = data.ReadFiexd(out byte have_s3)) == 0)
+                {
+                    if (have_s3 == 1)
+                    {
+                        this.ST3 = new StructOne();
+                        if ((err = this.ST3.Read(om, data)) != 0)
+                            return err;
+                    }
+                }
+                else
+                    return err;
+
+
+
+
+
+                if (data.Offset > endoffset)
+                    throw new IndexOutOfRangeException($"typeid:{GetTypeid()} class:Foo offset error");
+                else
+                    data.Offset = endoffset;
+
                 return 0;
+
+
+                //base.Read(om, data);
+                //int err;
+                //if ((err = om.ReadFrom(data, out int __p1)) == 0)
+                //    P1 = __p1;
+                //else return err;
+
+                //if ((err = om.ReadFrom(data, out float __p2)) == 0)
+                //    P2 = __p2;
+                //else return err;
+
+                //if ((err = om.ReadFrom(data, out string __p3)) == 0)
+                //    P3 = __p3;
+                //else return err;
+
+                //if ((err = om.ReadObj(data, out Ponit __position)) == 0)
+                //    Position = __position;
+                //else return err;
+
+                //if ((err = om.ReadObj(data, out Ponit __position2)) == 0)
+                //    Position2 = __position2;
+                //else return err;
+
+                //if ((err = om.ReadObj(data, out Foo __foo)) == 0)
+                //    My = __foo;
+                //else return err;
+
+                //if ((err = om.ReadObj(data, out List<Ponit> __positions)) == 0)
+                //    Positions = __positions;
+                //else return err;
+
+                //if ((err = this.ST1.Read(om, data)) != 0)
+                //    return err;
+
+                //if ((err = this.ST2.Read(om, data)) != 0)
+                //    return err;
+
+
+                //if ((err = data.ReadFiexd(out byte have_st3)) == 0)
+                //{
+                //    if (have_st3 == 1)
+                //    {
+                //        this.ST3 = new StructOne();
+                //        if ((err = this.ST3.Read(om, data)) != 0)
+                //            return err;
+                //    }
+                //}
+                //else return err;
+
+                //return 0;
             }
 
             public new void Write(ObjManager om, Data data)
             {
                 base.Write(om, data);
 
-                //var bak = data.Length;
-                //data.WriteFiexd(sizeof(uint));
-                //om.WriteTo(data, this.P1);
-                //om.WriteTo(data, this.P2);
-                //om.WriteTo(data, this.P3);
-                //om.WriteObj(data, this.Position);
-                //om.WriteObj(data, this.Position2);
-                //om.WriteObj(data, this.My);
-                //data.WriteFiexdAt(bak, (uint)(data.Length - bak));
-
-
+                var bak = data.Length;
+                data.WriteFiexd(sizeof(uint));
                 om.WriteTo(data, this.P1);
                 om.WriteTo(data, this.P2);
                 om.WriteTo(data, this.P3);
@@ -382,6 +534,35 @@ namespace xxlibtest
                 om.WriteObj(data, this.Position2);
                 om.WriteObj(data, this.My);
                 om.WriteObj(data, this.Positions);
+                this.ST1.Write(om, data);
+                this.ST2.Write(om, data);
+                if (this.ST3 is null)
+                    data.WriteFiexd((byte)0);
+                else
+                {
+                    data.WriteFiexd((byte)1);
+                    this.ST3.Write(om, data);
+                }
+                data.WriteFiexdAt(bak, (uint)(data.Length - bak));
+
+
+                //om.WriteTo(data, this.P1);
+                //om.WriteTo(data, this.P2);
+                //om.WriteTo(data, this.P3);
+                //om.WriteObj(data, this.Position);
+                //om.WriteObj(data, this.Position2);
+                //om.WriteObj(data, this.My);
+                //om.WriteObj(data, this.Positions);
+
+                //this.ST1.Write(om, data);
+                //this.ST2.Write(om, data);
+                //if (this.ST3 is null)
+                //    data.WriteFiexd((byte)0);
+                //else
+                //{
+                //    data.WriteFiexd((byte)1);
+                //    this.ST3.Write(om, data);
+                //}
             }
 
             public override string ToString()            
@@ -484,6 +665,29 @@ namespace xxlibtest
 
                 foo.Position2 = foo.Position;
                 foo.My = foo;
+                foo.ST1.S1 = 122;
+                foo.ST1.S2 = "211";
+
+                foo.ST2.S1 = 333;
+                foo.ST2.S2 = "444";
+                foo.ST2.My = foo;
+                foo.ST2.P1 = 1;
+                foo.ST2.P2 = 0.54f;
+                foo.ST2.P3 = "321321";
+                foo.Position = new Ponit
+                {
+                    X = 300,
+                    Y = 400
+                };
+
+                foo.ST2.Position2 = foo.Position;
+
+                foo.ST3 = new StructOne
+                {
+                    S1 = 111,
+                    S2 = "ST3"
+                };
+                
 
                 objmanager.WriteTo(data, new List<Foo> { foo, foo, foo });
 
@@ -493,6 +697,15 @@ namespace xxlibtest
 
                 Assert.True(objmanager.ReadFrom(read, out List<Foo> a) == 0);
                 Assert.True(a.Count == 3);
+
+                var x = a[0];
+
+                Assert.True(x.ST1.S1 == foo.ST1.S1);
+                Assert.True(x.ST1.S2 == foo.ST1.S2);
+                Assert.True(x.ST2.S1 == foo.ST2.S1);
+                Assert.True(x.ST2.S2 == foo.ST2.S2);
+                Assert.True(x.ST3.S1 == foo.ST3.S1);
+                Assert.True(x.ST3.S2 == foo.ST3.S2);
 
             }
         }
