@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -6,10 +7,15 @@ namespace xx
 {
     public class Data : IDisposable
     {
+
         public static bool IsBigEndian { get; set; }
-        GCHandle handle;
-        byte[] array;
-        unsafe byte* buff;
+
+
+        Lazy<Dictionary<ISerde, uint>> _ptrStore = new Lazy<Dictionary<ISerde, uint>>(System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
+    
+        public Dictionary<ISerde, uint> PtrStore => _ptrStore.Value;       
+        
+        byte[] buff;
         int len;
         int cap;
          
@@ -23,26 +29,16 @@ namespace xx
         public int Cap => cap;
 
         public Data(int cap = 256)
-        {           
-            var siz = EnsureCapcity( cap);
-            array = new byte[siz];
-            handle = GCHandle.Alloc(array, GCHandleType.Pinned);
-            unsafe
-            {
-                buff = (byte*)handle.AddrOfPinnedObject();
-            }
+        {
+            var siz = EnsureCapcity(cap);
+            buff = new byte[siz];
             this.cap = siz;
         }
 
         public Data(byte[] data)
-        {          
-            array = data;
+        {
             this.cap = data.Length;
-            handle = GCHandle.Alloc(array, GCHandleType.Pinned);
-            unsafe
-            {
-                buff = (byte*)handle.AddrOfPinnedObject();
-            }
+            buff = data;
         }
 
 
@@ -55,20 +51,12 @@ namespace xx
         {
             if (newSize < cap) return;
 
-            if (handle != default)
-                handle.Free();
-
             var siz = EnsureCapcity(newSize);
-            if (array is null)
-                array = new byte[siz];
+            if (buff is null)
+                buff = new byte[siz];
             else
-                Array.Resize(ref array, siz);
-
-            handle = GCHandle.Alloc(array, GCHandleType.Pinned);
-            unsafe
-            {
-                buff = (byte*)handle.AddrOfPinnedObject();
-            }
+                Array.Resize(ref buff, siz);
+          
             cap = siz;
         }
 
@@ -115,11 +103,11 @@ namespace xx
             if (len + length > cap)
             {
                 var write_index = Resize(len + length);
-                Buffer.BlockCopy(data, index, array, write_index, length);
+                Buffer.BlockCopy(data, index, buff, write_index, length);
             }
             else
             {
-                Buffer.BlockCopy(data, index, array, len, length);
+                Buffer.BlockCopy(data, index, buff, len, length);
             }
 
             len += length;
@@ -143,11 +131,10 @@ namespace xx
 
             if (len + 1 > cap)
                 Reserve(len + 1);
-            unsafe
-            {
-                buff[len] = v;
-                len += 1;
-            }
+
+            buff[len] = v;
+            len += 1;
+
         }
 
         /// <summary>
@@ -177,13 +164,11 @@ namespace xx
 
             if (len + sizeof(ushort) > cap)
                 Reserve(len + sizeof(ushort));
-            unsafe
-            {
-                var p = buff + len;
-                p[0] = (byte)v;
-                p[1] = (byte)(v >> 8);
-                len += sizeof(short);
-            }
+
+            var p =  len;
+            buff[p] = (byte)v;
+            buff[p+1] = (byte)(v >> 8);
+            len += sizeof(short);
         }
 
         /// <summary>
@@ -200,13 +185,12 @@ namespace xx
 
             if (len + sizeof(short) > cap)
                 Reserve(len + sizeof(short));
-            unsafe
-            {
-                var p = buff + len;
-                p[0] = (byte)v;
-                p[1] = (byte)(v >> 8);
-                len += sizeof(short);
-            }
+
+            var p = len;
+            buff[p] = (byte)v;
+            buff[p + 1] = (byte)(v >> 8);
+            len += sizeof(short);
+
         }
 
         /// <summary>
@@ -224,15 +208,13 @@ namespace xx
             if (len + sizeof(uint) > cap)
                 Reserve(len + sizeof(uint));
 
-            unsafe
-            {
-                var p = buff + len;
-                p[0] = (byte)v;
-                p[1] = (byte)(v >> 8);
-                p[2] = (byte)(v >> 16);
-                p[3] = (byte)(v >> 24);
-                len += sizeof(uint);
-            }
+            var p = len;
+            buff[p] = (byte)v;
+            buff[p + 1] = (byte)(v >> 8);
+            buff[p + 2] = (byte)(v >> 16);
+            buff[p + 3] = (byte)(v >> 24);
+            len += sizeof(uint);
+
         }
 
         /// <summary>
@@ -249,15 +231,14 @@ namespace xx
 
             if (len + sizeof(int) > cap)
                 Reserve(len + sizeof(int));
-            unsafe
-            {
-                var p = buff + len;
-                p[0] = (byte)v;
-                p[1] = (byte)(v >> 8);
-                p[2] = (byte)(v >> 16);
-                p[3] = (byte)(v >> 24);
-                len += sizeof(uint);
-            }
+
+            var p = len;
+            buff[p] = (byte)v;
+            buff[p + 1] = (byte)(v >> 8);
+            buff[p + 2] = (byte)(v >> 16);
+            buff[p + 3] = (byte)(v >> 24);
+            len += sizeof(uint);
+
         }
 
         /// <summary>
@@ -274,19 +255,18 @@ namespace xx
 
             if (len + sizeof(ulong) > cap)
                 Reserve(len + sizeof(ulong));
-            unsafe
-            {
-                var p = buff + len;
-                p[0] = (byte)v;
-                p[1] = (byte)(v >> 8);
-                p[2] = (byte)(v >> 16);
-                p[3] = (byte)(v >> 24);
-                p[4] = (byte)(v >> 32);
-                p[5] = (byte)(v >> 40);
-                p[6] = (byte)(v >> 48);
-                p[7] = (byte)(v >> 56);
-                len += sizeof(ulong);
-            }
+
+            var p = len;
+            buff[p] = (byte)v;
+            buff[p + 1] = (byte)(v >> 8);
+            buff[p + 2] = (byte)(v >> 16);
+            buff[p + 3] = (byte)(v >> 24);
+            buff[p + 4] = (byte)(v >> 32);
+            buff[p + 5] = (byte)(v >> 40);
+            buff[p + 6] = (byte)(v >> 48);
+            buff[p + 7] = (byte)(v >> 56);
+            len += sizeof(ulong);
+
         }
 
         /// <summary>
@@ -303,19 +283,17 @@ namespace xx
 
             if (len + sizeof(long) > cap)
                 Reserve(len + sizeof(long));
-            unsafe
-            {
-                var p = buff + len;
-                p[0] = (byte)v;
-                p[1] = (byte)(v >> 8);
-                p[2] = (byte)(v >> 16);
-                p[3] = (byte)(v >> 24);
-                p[4] = (byte)(v >> 32);
-                p[5] = (byte)(v >> 40);
-                p[6] = (byte)(v >> 48);
-                p[7] = (byte)(v >> 56);
-                len += sizeof(long);
-            }
+
+            var p = len;
+            buff[p] = (byte)v;
+            buff[p + 1] = (byte)(v >> 8);
+            buff[p + 2] = (byte)(v >> 16);
+            buff[p + 3] = (byte)(v >> 24);
+            buff[p + 4] = (byte)(v >> 32);
+            buff[p + 5] = (byte)(v >> 40);
+            buff[p + 6] = (byte)(v >> 48);
+            buff[p + 7] = (byte)(v >> 56);
+            len += sizeof(ulong);
         }
 
         /// <summary>
@@ -333,21 +311,21 @@ namespace xx
             var x = new FloatingInteger { f = v };
             unsafe
             {
-                var p = buff + len;
+                var p = len;
 
                 if (IsBigEndian)
                 {
-                    p[0] = x.b3;
-                    p[1] = x.b2;
-                    p[2] = x.b1;
-                    p[3] = x.b0;
+                    buff[p] = x.b3;
+                    buff[p + 1] = x.b2;
+                    buff[p + 2] = x.b1;
+                    buff[p + 3] = x.b0;
                 }
                 else
                 {
-                    p[0] = x.b0;
-                    p[1] = x.b1;
-                    p[2] = x.b2;
-                    p[3] = x.b3;
+                    buff[p] = x.b0;
+                    buff[p + 1] = x.b1;
+                    buff[p + 2] = x.b2;
+                    buff[p + 3] = x.b3;
                 }
                 len += 4;
             }
@@ -368,28 +346,28 @@ namespace xx
             var x = new FloatingInteger { d = v };
             unsafe
             {
-                var p = buff + len;
+                var p =  len;
                 if (IsBigEndian)
                 {
-                    p[0] = x.b7;
-                    p[1] = x.b6;
-                    p[2] = x.b5;
-                    p[3] = x.b4;
-                    p[4] = x.b3;
-                    p[5] = x.b2;
-                    p[6] = x.b1;
-                    p[7] = x.b0;
+                    buff[p] = x.b7;
+                    buff[p + 1] = x.b6;
+                    buff[p + 2] = x.b5;
+                    buff[p + 3] = x.b4;
+                    buff[p + 4] = x.b3;
+                    buff[p + 5] = x.b2;
+                    buff[p + 6] = x.b1;
+                    buff[p + 7] = x.b0;
                 }
                 else
                 {
-                    p[0] = x.b0;
-                    p[1] = x.b1;
-                    p[2] = x.b2;
-                    p[3] = x.b3;
-                    p[4] = x.b4;
-                    p[5] = x.b5;
-                    p[6] = x.b6;
-                    p[7] = x.b7;
+                    buff[p] = x.b0;
+                    buff[p + 1] = x.b1;
+                    buff[p + 2] = x.b2;
+                    buff[p + 3] = x.b3;
+                    buff[p + 4] = x.b4;
+                    buff[p + 5] = x.b5;
+                    buff[p + 6] = x.b6;
+                    buff[p + 7] = x.b7;
                 }
                 len += 8;
             }
@@ -410,11 +388,8 @@ namespace xx
 
             if (idx+ length > len)
                 Resize(len + idx + length);
-
-            fixed (byte* source = &data[index])
-            {
-                Buffer.MemoryCopy(source, buff + idx, cap - idx, length);
-            }
+           
+            Buffer.BlockCopy(data, index, buff, idx, length);
 
         }
 
@@ -428,17 +403,16 @@ namespace xx
         /// 写入定长 byte
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexdAt(int idx,byte v)
+        public void WriteFiexdAt(int idx, byte v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
 
-            if (idx +1 > len)
+            if (idx + 1 > len)
                 Resize(idx + 1);
-            unsafe
-            {
-                buff[idx] = v;               
-            }
+
+            buff[idx] = v;
+
         }
 
         /// <summary>
@@ -458,7 +432,7 @@ namespace xx
         /// 写入定长 ushort
         /// </summary>   
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexdAt(int idx,ushort v)
+        public void WriteFiexdAt(int idx, ushort v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -468,12 +442,10 @@ namespace xx
 
             if (idx + sizeof(ushort) > len)
                 Resize(idx + sizeof(ushort));
-            unsafe
-            {
-                var p = buff+ idx;
-                p[0] = (byte)v;
-                p[1] = (byte)(v >> 8);               
-            }
+
+            buff[idx] = (byte)v;
+            buff[idx + 1] = (byte)(v >> 8);
+
         }
 
         /// <summary>
@@ -490,19 +462,17 @@ namespace xx
 
             if (idx + sizeof(short) > len)
                 Resize(idx + sizeof(short));
-            unsafe
-            {
-                var p = buff + idx;
-                p[0] = (byte)v;
-                p[1] = (byte)(v >> 8);
-            }
+
+            buff[idx] = (byte)v;
+            buff[idx + 1] = (byte)(v >> 8);
+
         }
 
         /// <summary>
         /// 写入定长 uint
         /// </summary>   
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexdAt(int idx,uint v)
+        public void WriteFiexdAt(int idx, uint v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -512,23 +482,20 @@ namespace xx
 
             if (idx + sizeof(uint) > len)
                 Resize(idx + sizeof(uint));
-            
 
-            unsafe
-            {
-                var p = buff + idx;
-                p[0] = (byte)v;
-                p[1] = (byte)(v >> 8);
-                p[2] = (byte)(v >> 16);
-                p[3] = (byte)(v >> 24);              
-            }
+
+            buff[idx] = (byte)v;
+            buff[idx + 1] = (byte)(v >> 8);
+            buff[idx + 2] = (byte)(v >> 16);
+            buff[idx + 3] = (byte)(v >> 24);
+
         }
 
         /// <summary>
         /// 写入定长 int
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexdAt(int idx,int v)
+        public void WriteFiexdAt(int idx, int v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -539,21 +506,19 @@ namespace xx
             if (idx + sizeof(int) > len)
                 Resize(idx + sizeof(int));
 
-            unsafe
-            {
-                var p = buff + idx;
-                p[0] = (byte)v;
-                p[1] = (byte)(v >> 8);
-                p[2] = (byte)(v >> 16);
-                p[3] = (byte)(v >> 24);
-            }
+
+            buff[idx] = (byte)v;
+            buff[idx + 1] = (byte)(v >> 8);
+            buff[idx + 2] = (byte)(v >> 16);
+            buff[idx + 3] = (byte)(v >> 24);
+
         }
 
         /// <summary>
         /// 写入定长 ulong
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexdAt(int idx,ulong v)
+        public void WriteFiexdAt(int idx, ulong v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -562,26 +527,24 @@ namespace xx
                 v = BinaryPrimitives.ReverseEndianness(v);
             if (idx + sizeof(ulong) > len)
                 Resize(idx + sizeof(ulong));
-            unsafe
-            {
-                var p = buff + idx;
-                p[0] = (byte)v;
-                p[1] = (byte)(v >> 8);
-                p[2] = (byte)(v >> 16);
-                p[3] = (byte)(v >> 24);
-                p[4] = (byte)(v >> 32);
-                p[5] = (byte)(v >> 40);
-                p[6] = (byte)(v >> 48);
-                p[7] = (byte)(v >> 56);
-             
-            }
+
+
+            buff[idx] = (byte)v;
+            buff[idx + 1] = (byte)(v >> 8);
+            buff[idx + 2] = (byte)(v >> 16);
+            buff[idx + 3] = (byte)(v >> 24);
+            buff[idx + 4] = (byte)(v >> 32);
+            buff[idx + 5] = (byte)(v >> 40);
+            buff[idx + 6] = (byte)(v >> 48);
+            buff[idx + 7] = (byte)(v >> 56);
+
         }
 
         /// <summary>
         /// 写入定长 long
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexdAt(int idx,long v)
+        public void WriteFiexdAt(int idx, long v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -592,25 +555,23 @@ namespace xx
             if (idx + sizeof(long) > len)
                 Resize(idx + sizeof(long));
 
-            unsafe
-            {
-                var p = buff + idx;
-                p[0] = (byte)v;
-                p[1] = (byte)(v >> 8);
-                p[2] = (byte)(v >> 16);
-                p[3] = (byte)(v >> 24);
-                p[4] = (byte)(v >> 32);
-                p[5] = (byte)(v >> 40);
-                p[6] = (byte)(v >> 48);
-                p[7] = (byte)(v >> 56);                
-            }
+
+            buff[idx] = (byte)v;
+            buff[idx + 1] = (byte)(v >> 8);
+            buff[idx + 2] = (byte)(v >> 16);
+            buff[idx + 3] = (byte)(v >> 24);
+            buff[idx + 4] = (byte)(v >> 32);
+            buff[idx + 5] = (byte)(v >> 40);
+            buff[idx + 6] = (byte)(v >> 48);
+            buff[idx + 7] = (byte)(v >> 56);
+
         }
 
         /// <summary>
         /// 写入定长 float
         /// </summary>   
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexdAt(int idx,float v)
+        public void WriteFiexdAt(int idx, float v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -619,21 +580,19 @@ namespace xx
                 Resize(idx + sizeof(float));
 
             var x = new FloatingInteger { f = v };
-            unsafe
-            {
-                var p = buff + idx;
-                p[0] = x.b0;
-                p[1] = x.b1;
-                p[2] = x.b2;
-                p[3] = x.b3;
-            }
+
+            buff[idx] = x.b0;
+            buff[idx + 1] = x.b1;
+            buff[idx + 2] = x.b2;
+            buff[idx + 3] = x.b3;
+
         }
 
         /// <summary>
         /// 写入定长 double
         /// </summary>      
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexdAt(int idx,double v)
+        public void WriteFiexdAt(int idx, double v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -642,18 +601,16 @@ namespace xx
                 Resize(idx + sizeof(double));
 
             var x = new FloatingInteger { d = v };
-            unsafe
-            {
-                var p = buff + idx;
-                p[0] = x.b0;
-                p[1] = x.b1;
-                p[2] = x.b2;
-                p[3] = x.b3;
-                p[4] = x.b4;
-                p[5] = x.b5;
-                p[6] = x.b6;
-                p[7] = x.b7;
-            }
+
+            buff[idx] = x.b0;
+            buff[idx + 1] = x.b1;
+            buff[idx + 2] = x.b2;
+            buff[idx + 3] = x.b3;
+            buff[idx + 4] = x.b4;
+            buff[idx + 5] = x.b5;
+            buff[idx + 6] = x.b6;
+            buff[idx + 7] = x.b7;
+
         }
 
         #endregion
@@ -741,20 +698,8 @@ namespace xx
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Clear()
-        {
-            array = null;
-            unsafe
-            {
-                buff = null;
-            }
-            if (handle != default)
-            {
-                handle.Free();
-                handle = default;
-            }
-
-            cap = 0;
-            len = 0;         
+        {          
+            len= 0;            
         }
 
 
@@ -765,21 +710,19 @@ namespace xx
         /// <returns>(data,len)</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public (byte[],int) ToArray()
-        {
-            var arr = array;
+        {           
             var len = this.len;
             Clear();
-            return (arr,len);
+            return (buff,len);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte[] ToData()
-        {
-            var arr = array;
+        {          
             var len = this.len;
             Clear();
             var data = new byte[len];
-            Buffer.BlockCopy(arr, 0, data, 0, len);
+            Buffer.BlockCopy(buff, 0, data, 0, len);
             return data;
         }
 
@@ -804,8 +747,12 @@ namespace xx
 
         }
 
-        public void Dispose() => Clear();
-
+        public void Dispose()
+        {
+            buff = null;
+            cap = 0;
+            Clear();
+        }
 
         /// <summary>
         /// 下标访问

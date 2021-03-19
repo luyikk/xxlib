@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace xx
 {
@@ -9,10 +8,12 @@ namespace xx
     {
         ushort GetTypeid();
         void Write(ObjManager om, Data data);
-        int Read(ObjManager om, DataReader data);
+        int Read(ObjManager om, DataReader data);      
+
     }
 
     public delegate ISerde TypeIdCreatorFunc();
+
 
     public class ObjManager
     {
@@ -28,11 +29,15 @@ namespace xx
 
         public static ISerde Create(int typeid) => typeIdCreatorMappings[typeid]();
 
-        Lazy<Dictionary<ISerde, uint>> _ptrStore = new Lazy<Dictionary<ISerde, uint>>(System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
-        Lazy<List<ISerde>> _idxStore = new Lazy<List<ISerde>>(System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
+        public static Func<object,string> SerializeStringFunc { get; set; }
 
-        public Dictionary<ISerde, uint> PtrStore => _ptrStore.Value;
-        public List<ISerde> IdxStore => _idxStore.Value;
+        public static string SerializeString(object obj)
+        {
+            if (SerializeStringFunc != null)
+                return SerializeStringFunc(obj);
+            else
+                return "SerializeStringFunc is null,Please set it up";
+        }
 
         #region WriteBase
         public void WriteTo(Data data, byte b)        
@@ -201,7 +206,7 @@ namespace xx
         #region WriteClass
         public void WriteTo<T>(Data data,T v) where T : class,ISerde,new()
         {
-            this.PtrStore.Clear();
+            data.PtrStore.Clear();
             WriteObj(data, v);
         }
 
@@ -212,11 +217,11 @@ namespace xx
                 data.WriteFiexd((byte)0);
             else
             {
-                if (!PtrStore.TryGetValue(v, out var offset))
+                if (!data.PtrStore.TryGetValue(v, out var offset))
                 {
                     var typeid = v.GetTypeid();
-                    offset = Convert.ToUInt32(PtrStore.Count + 1);
-                    PtrStore.Add(v, offset);
+                    offset = Convert.ToUInt32(data.PtrStore.Count + 1);
+                    data.PtrStore.Add(v, offset);
                     data.WriteVarInteger(offset);
                     data.WriteVarInteger(typeid);
                     v.Write(this, data);
@@ -241,7 +246,7 @@ namespace xx
 
         public void WriteTo<T>(Data data,T[] v) where T : class, ISerde, new()
         {
-            this.PtrStore.Clear();
+            data.PtrStore.Clear();
             WriteObj(data, v);
         }
 
@@ -259,7 +264,7 @@ namespace xx
 
         public void WriteTo<S>(Data data,List<S> v) where S:class,ISerde,new()
         {
-            this.PtrStore.Clear();
+            data.PtrStore.Clear();
             WriteObj(data, v);
         }
 
@@ -867,7 +872,7 @@ namespace xx
 
         public int ReadFrom(DataReader data,out ISerde v)
         {
-            IdxStore.Clear();
+            data.IdxStore.Clear();
             return ReadISerde(data, out v);
 
         }
@@ -882,14 +887,14 @@ namespace xx
                 if (offset == 0)
                     return 0;
                
-                if(offset == IdxStore.Count+1)
+                if(offset == data.IdxStore.Count+1)
                 {
                     if ((err = data.ReadVarInteger(out ushort typeid)) == 0)
                     {
                         v = Create(typeid);
                         if (v != null)
                         {
-                            IdxStore.Add(v);
+                            data.IdxStore.Add(v);
                             return v.Read(this, data);
                         }
                         else
@@ -898,10 +903,10 @@ namespace xx
                 }
                 else
                 {
-                    if(offset> IdxStore.Count)
+                    if(offset> data.IdxStore.Count)
                         throw new KeyNotFoundException($"offset :{offset} error");
 
-                    v = IdxStore[(int)offset - 1];
+                    v = data.IdxStore[(int)offset - 1];
                     if (v != null)
                         return 0;
                     else
@@ -914,7 +919,7 @@ namespace xx
 
         public int ReadFrom<T>(DataReader data, out T v) where T : class, ISerde, new()
         {
-            IdxStore.Clear();
+            data.IdxStore.Clear();
             return ReadObj(data, out v);
         }
 
@@ -927,14 +932,14 @@ namespace xx
                 if (offset == 0)
                     return 0;
 
-                if (offset == IdxStore.Count + 1)
+                if (offset == data.IdxStore.Count + 1)
                 {
                     if ((err = data.ReadVarInteger(out ushort typeid)) == 0)
                     {
                         v = Create(typeid) as T;
                         if (v != null)
                         {
-                            IdxStore.Add(v);
+                            data.IdxStore.Add(v);
                             return v.Read(this, data);                            
                         }
                         else
@@ -943,10 +948,10 @@ namespace xx
                 }
                 else
                 {
-                    if (offset > IdxStore.Count)
+                    if (offset > data.IdxStore.Count)
                         throw new KeyNotFoundException($"offset :{offset} error");
 
-                    v = IdxStore[(int)offset - 1] as T;
+                    v = data.IdxStore[(int)offset - 1] as T;
                     if (v != null)
                         return 0;
                     else
@@ -978,7 +983,7 @@ namespace xx
 
         public int ReadFrom<T>(DataReader data, out T[] v) where T : class, ISerde, new()
         {
-            IdxStore.Clear();
+            data.IdxStore.Clear();
             return ReadObj(data, out v);
         }
 
@@ -1004,10 +1009,10 @@ namespace xx
 
         #endregion
 
-            #region ReadList
+        #region ReadList
         public int ReadFrom<T>(DataReader data, out List<T> v) where T : class, ISerde, new()
         {
-            IdxStore.Clear();
+            data.IdxStore.Clear();
             return ReadObj(data, out v);
         }
 

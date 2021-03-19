@@ -53,6 +53,10 @@ namespace PKG
             om.WriteTo(data, this.S2);
             data.WriteFiexdAt(bak, (uint)(data.Length - bak));
         }
+
+        public override string ToString()            
+           => xx.ObjManager.SerializeString(this);
+
     }
 }
 
@@ -95,6 +99,10 @@ namespace PKG.P
             om.WriteTo(data, this.Y);
             om.WriteTo(data, this.Z);
         }
+
+        public override string ToString()            
+           => xx.ObjManager.SerializeString(this);
+
     }
 }
 
@@ -210,13 +218,17 @@ namespace PKG
             om.WriteObj(data, this.Positions);
             data.WriteFiexdAt(bak, (uint)(data.Length - bak));
         }
+
+        public override string ToString()            
+           => xx.ObjManager.SerializeString(this);
+
     }
 }
 
 
 public static partial class CodeGen_Test
 {
-    public const string md5 = "#*MD5<c41757fc3b6822662a122fb2d6270f7c>*#"; 
+    public const string md5 = "#*MD5<fb09ffb713638f411957087983059981>*#"; 
     public static void Register()
     {
          xx.ObjManager.Register<PKG.Base>(11);

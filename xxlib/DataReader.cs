@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace xx
 {
@@ -9,10 +8,13 @@ namespace xx
     {
         public static bool IsBigEndian { get; set; }
 
+        Lazy<List<ISerde>> _idxStore = new Lazy<List<ISerde>>(System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
+        public List<ISerde> IdxStore => _idxStore.Value;
+
         byte[] buff;     
         int len;
+        int position;
         int offset;
-
 
         /// <summary>
         /// 长度
@@ -24,10 +26,10 @@ namespace xx
         /// </summary>
         public int Offset
         {
-            get => offset;
+            get => position-offset;
             set
             {
-                offset = value;
+                position = offset+value;
             }
         }
 
@@ -38,9 +40,11 @@ namespace xx
             this.len = data.Length;
         }
 
-        public DataReader(byte[] data,int length)
+        public DataReader(byte[] data,int offset,int length)
         {
             this.buff = data;
+            this.position = offset;
+            this.offset = offset;
             this.len = length;
         }
 
@@ -51,9 +55,9 @@ namespace xx
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int ReadBuf(byte[] data, int index, int length)
         {
-            if (offset + length > len) return -1;
-            Buffer.BlockCopy(buff, offset, data, index, length);
-            offset += length;
+            if (position + length > len) return -1;
+            Buffer.BlockCopy(buff, position, data, index, length);
+            position += length;
             return 0;
         }
 
@@ -74,14 +78,14 @@ namespace xx
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int ReadFiexd(out byte v)
         {
-            if (offset + sizeof(byte) > len)
+            if (position + sizeof(byte) > len)
             {
                 v = 0;
                 return -3;
             }
 
-            v = buff[offset];
-            offset += 1;
+            v = buff[position];
+            position += 1;
             return 0;
         }
 
@@ -117,7 +121,7 @@ namespace xx
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int ReadFiexd(out ushort v)
         {
-            if (offset + sizeof(ushort) > len)
+            if (position + sizeof(ushort) > len)
             {
                 v = 0;
                 return -4;
@@ -125,12 +129,12 @@ namespace xx
 
             unsafe
             {
-                fixed (byte* numRef = &(buff[offset]))
+                fixed (byte* numRef = &(buff[position]))
                 {
                     v = *(ushort*)numRef;
                     if (IsBigEndian)
                         v =BinaryPrimitives.ReverseEndianness(v);
-                    offset += sizeof(ushort);
+                    position += sizeof(ushort);
                     return 0;
                 }
             }
@@ -142,7 +146,7 @@ namespace xx
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int ReadFiexd(out short v)
         {
-            if (offset + sizeof(short) > len)
+            if (position + sizeof(short) > len)
             {
                 v = 0;
                 return -5;
@@ -150,12 +154,12 @@ namespace xx
 
             unsafe
             {
-                fixed (byte* numRef = &(buff[offset]))
+                fixed (byte* numRef = &(buff[position]))
                 {
                     v = *(short*)numRef;
                     if (IsBigEndian)
                         v = BinaryPrimitives.ReverseEndianness(v);
-                    offset += sizeof(short);
+                    position += sizeof(short);
                     return 0;
                 }
             }
@@ -167,7 +171,7 @@ namespace xx
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int ReadFiexd(out uint v)
         {
-            if (offset + sizeof(uint) > len)
+            if (position + sizeof(uint) > len)
             {
                 v = 0;
                 return -6;
@@ -175,12 +179,12 @@ namespace xx
 
             unsafe
             {
-                fixed (byte* numRef = &(buff[offset]))
+                fixed (byte* numRef = &(buff[position]))
                 {
                     v = *(uint*)numRef;
                     if (IsBigEndian)
                         v = BinaryPrimitives.ReverseEndianness(v);
-                    offset += sizeof(uint);
+                    position += sizeof(uint);
                     return 0;
                 }
             }
@@ -192,7 +196,7 @@ namespace xx
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int ReadFiexd(out int v)
         {
-            if (offset + sizeof(int) > len)
+            if (position + sizeof(int) > len)
             {
                 v = 0;
                 return -7;
@@ -200,12 +204,12 @@ namespace xx
 
             unsafe
             {
-                fixed (byte* numRef = &(buff[offset]))
+                fixed (byte* numRef = &(buff[position]))
                 {
                     v = *(int*)numRef;
                     if (IsBigEndian)
                         v = BinaryPrimitives.ReverseEndianness(v);
-                    offset += sizeof(int);
+                    position += sizeof(int);
                     return 0;
                 }
             }
@@ -217,7 +221,7 @@ namespace xx
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int ReadFiexd(out ulong v)
         {
-            if (offset + sizeof(ulong) > len)
+            if (position + sizeof(ulong) > len)
             {
                 v = 0;
                 return -8;
@@ -225,12 +229,12 @@ namespace xx
 
             unsafe
             {
-                fixed (byte* numRef = &(buff[offset]))
+                fixed (byte* numRef = &(buff[position]))
                 {
                     v = *(ulong*)numRef;
                     if (IsBigEndian)
                         v = BinaryPrimitives.ReverseEndianness(v);
-                    offset += sizeof(ulong);
+                    position += sizeof(ulong);
                     return 0;
                 }
             }
@@ -242,7 +246,7 @@ namespace xx
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int ReadFiexd(out long v)
         {
-            if (offset + sizeof(long) > len)
+            if (position + sizeof(long) > len)
             {
                 v = 0;
                 return -9;
@@ -250,12 +254,12 @@ namespace xx
 
             unsafe
             {
-                fixed (byte* numRef = &(buff[offset]))
+                fixed (byte* numRef = &(buff[position]))
                 {
                     v = *(long*)numRef;
                     if (IsBigEndian)
                         v = BinaryPrimitives.ReverseEndianness(v);
-                    offset += sizeof(long);
+                    position += sizeof(long);
                     return 0;
                 }
             }
@@ -268,7 +272,7 @@ namespace xx
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int ReadFiexd(out float v)
         {
-            if (offset + sizeof(float) > len)
+            if (position + sizeof(float) > len)
             {
                 v = 0;
                 return -10;
@@ -276,12 +280,12 @@ namespace xx
 
             unsafe
             {
-                fixed (byte* numRef = &(buff[offset]))
+                fixed (byte* numRef = &(buff[position]))
                 {
                     var x = *(uint*)numRef;
                     uint p = IsBigEndian ? BinaryPrimitives.ReverseEndianness(x) : x;
                     v= *((float*)&p); 
-                    offset += sizeof(float);
+                    position += sizeof(float);
                     return 0;
                 }
             }
@@ -293,7 +297,7 @@ namespace xx
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int ReadFiexd(out double v)
         {
-            if (offset + sizeof(float) > len)
+            if (position + sizeof(float) > len)
             {
                 v = 0;
                 return -11;
@@ -301,12 +305,12 @@ namespace xx
 
             unsafe
             {
-                fixed (byte* numRef = &(buff[offset]))
+                fixed (byte* numRef = &(buff[position]))
                 {
                     var x = *(ulong*)numRef;
                     ulong p = IsBigEndian ? BinaryPrimitives.ReverseEndianness(x) : x;
                     v= *(double*)&p;
-                    offset += sizeof(double);
+                    position += sizeof(double);
                     return 0;
                 }
             }
@@ -562,9 +566,9 @@ namespace xx
             v = 0;
             for (int shift = 0; shift < sizeof(ushort)*8; shift+=7)
             {
-                if (offset == len)
+                if (position == len)
                     return -201;
-                uint b = buff[offset++];
+                uint b = buff[position++];
                 v|=(ushort)((b & 0x7Fu) << shift);
                 if ((b & 0x80) == 0)                
                     return 0;                
@@ -593,9 +597,9 @@ namespace xx
             v = 0;
             for (int shift = 0; shift < sizeof(uint) * 8; shift += 7)
             {
-                if (offset == len)
+                if (position == len)
                     return -211;
-                uint b = buff[offset++];
+                uint b = buff[position++];
                 v |= ((b & 0x7Fu) << shift);
                 if ((b & 0x80) == 0)
                     return 0;
@@ -626,9 +630,9 @@ namespace xx
             v = 0;
             for (int shift = 0; shift < sizeof(ulong) * 8; shift += 7)
             {
-                if (offset == len)
+                if (position == len)
                     return -221;
-                ulong b = buff[offset++];
+                ulong b = buff[position++];
                 v |= ((b & 0x7Fu) << shift);
                 if ((b & 0x80) == 0)
                     return 0;
@@ -661,7 +665,7 @@ namespace xx
             {
                 if (len > 0)
                 {
-                    if (len > this.len - offset)
+                    if (len > this.len - position)
                         return -333;
 
                     byte[] data = new byte[len];

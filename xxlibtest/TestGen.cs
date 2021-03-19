@@ -47,7 +47,11 @@ namespace xxlibtest
                 objmanager.WriteTo(data, foo);
                 var (buff, len) = data.ToArray();
 
-                var read = new xx.DataReader(buff, len);
+
+                var buff_p = new byte[10 + len];
+                Buffer.BlockCopy(buff, 0, buff_p, 10, len);
+
+                var read = new xx.DataReader(buff_p, 10, buff_p.Length);
                 Assert.True(objmanager.ReadFrom(read, out Foo a) == 0);
                 Assert.True(foo.S1 == a.S1);
                 Assert.True(foo.S2 == a.S2);
@@ -85,10 +89,14 @@ namespace xxlibtest
                 else
                     throw new Exception("error type");
 
+                var json= ObjManager.SerializeString(foo);
+                Console.WriteLine(json);
+
             }
             {
                 var data = new xx.Data();
                 var objmanager = new ObjManager();
+              
 
                 var foo = new Foo
                 {
@@ -110,10 +118,12 @@ namespace xxlibtest
                 objmanager.WriteTo(data, new List<Foo> { foo, foo, foo });
 
                 var (buff, len) = data.ToArray();
-                var read = new xx.DataReader(buff, len);
+                var read = new xx.DataReader(buff,0, len);
 
                 Assert.True(objmanager.ReadFrom(read, out List<Foo> a) == 0);
                 Assert.True(a.Count == 3);
+
+
             }
         }
     }

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 using xx;
 
@@ -33,7 +30,7 @@ namespace xxlibtest
                 objmanager.WriteTo(data, 0.22);
 
                 var (buff, len) = data.ToArray();
-                var reader = new DataReader(buff, len);
+                var reader = new DataReader(buff, 0,len);
 
                 Assert.True(objmanager.ReadFrom(reader, out byte a) == 0);
                 Assert.Equal(1, a);
@@ -94,7 +91,7 @@ namespace xxlibtest
 
 
                 var (buff, len) = data.ToArray();
-                var reader = new DataReader(buff, len);
+                var reader = new DataReader(buff, 0,len);
 
                 Assert.True(objmanager.ReadFrom(reader, out byte? a) == 0);
                 Assert.Equal(1, a.Value);
@@ -144,7 +141,7 @@ namespace xxlibtest
             objmanager.WriteTo(data, new List<long?> { 1, null, 3, null, 5 });
 
             var (buff, len) = data.ToArray();
-            var reader = new DataReader(buff, len);
+            var reader = new DataReader(buff,0, len);
 
             Assert.True(objmanager.ReadFrom(reader, out byte[] a) == 0);
             Assert.Equal(new byte[] { 1, 2, 3, 4, 5 }, a);
@@ -386,6 +383,10 @@ namespace xxlibtest
                 om.WriteObj(data, this.My);
                 om.WriteObj(data, this.Positions);
             }
+
+            public override string ToString()            
+                => ObjManager.SerializeString(this);
+            
         }
 
 
@@ -426,7 +427,7 @@ namespace xxlibtest
                 objmanager.WriteTo(data, foo);
                 var (buff, len) = data.ToArray();
 
-                var read = new xx.DataReader(buff, len);
+                var read = new xx.DataReader(buff,0, len);
                 Assert.True(objmanager.ReadFrom(read, out Foo a) == 0);
                 Assert.True(foo.S1 == a.S1);
                 Assert.True(foo.S2 == a.S2);
@@ -487,7 +488,8 @@ namespace xxlibtest
                 objmanager.WriteTo(data, new List<Foo> { foo, foo, foo });
 
                 var (buff, len) = data.ToArray();
-                var read = new xx.DataReader(buff, len);
+
+                var read = new xx.DataReader(buff, 0,len);
 
                 Assert.True(objmanager.ReadFrom(read, out List<Foo> a) == 0);
                 Assert.True(a.Count == 3);

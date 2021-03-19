@@ -250,12 +250,14 @@ namespace xxlibtest
         public void test_read_buff()
         {
             {
-                var data = new xx.DataReader(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 });
+                var datard = new xx.DataReader(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 });
                 var buff = new byte[100];
-                Assert.True(data.ReadBuf(buff, 0, 10) == 0);
+                Assert.True(datard.ReadBuf(buff, 0, 10) == 0);
             }
-            {
-                using var data = new xx.Data();
+
+            using var data = new xx.Data();
+
+            {              
                 data.WriteFiexd((byte)1);
                 data.WriteFiexd((sbyte)2);
                 data.WriteFiexd((short)3);
@@ -270,7 +272,7 @@ namespace xxlibtest
                 data.WriteFiexd(0.55);
 
                 var (buff, len) = data.ToArray();
-                var read = new xx.DataReader(buff, len);
+                var read = new xx.DataReader(buff, 0,len);
                 Assert.True(read.ReadFiexd(out byte a) == 0);
                 Assert.Equal(1, a);
 
@@ -308,8 +310,7 @@ namespace xxlibtest
                 Assert.Equal(0.55, l);
 
             }
-            {
-                using var data = new xx.Data();
+            {               
                 data.WriteFiexd((byte)1);
                 data.WriteFiexd((sbyte)2);
                 data.WriteFiexd((short)3);
@@ -324,7 +325,7 @@ namespace xxlibtest
                 data.WriteFiexd(0.55);
 
                 var (buff, len) = data.ToArray();
-                var read = new xx.DataReader(buff, len);
+                var read = new xx.DataReader(buff,0, len);
                 Assert.True(read.ReadFiexdAt(0,out byte a) == 0);
                 Assert.Equal(1, a);
 
@@ -363,8 +364,7 @@ namespace xxlibtest
 
                 Assert.True(read.Offset == 0);
             }
-            {
-                using var data = new xx.Data();
+            {               
                 data.WriteVarInteger((short)1);
                 data.WriteVarInteger((ushort)2);
                 data.WriteVarInteger((int)3);
@@ -375,7 +375,7 @@ namespace xxlibtest
                 data.WriteBuf(new byte[] { 1, 2, 3, 4, 5 },0,5);
 
                 var (buff, len) = data.ToArray();
-                var read = new xx.DataReader(buff, len);
+                var read = new xx.DataReader(buff,0, len);
                 Assert.True(read.ReadVarInteger(out short a) == 0);
                 Assert.Equal(1, a);
 
@@ -398,13 +398,12 @@ namespace xxlibtest
                 Assert.Equal(5, g);
 
             }
-            {
-                using var data = new xx.Data();
+            {                
                 data.WriteVarInteger("123123123");
                 data.WriteVarInteger("321321321");
                 data.WriteVarInteger("");
                 var (buff, len) = data.ToArray();
-                var read = new xx.DataReader(buff, len);
+                var read = new xx.DataReader(buff,0, len);
                 Assert.True(read.ReadVarInteger(out string v) == 0);
                 Assert.Equal("123123123", v);
 
@@ -415,13 +414,12 @@ namespace xxlibtest
                 Assert.Equal("", v3);
             }
             {
-
-                using var data = new xx.Data();
+               
                 for (int i = 0; i < 100000; i++)                
                     data.WriteFiexd(i);
 
                 var (buff, len) = data.ToArray();
-                var read = new xx.DataReader(buff, len);
+                var read = new xx.DataReader(buff, 0,len);
 
                 for (int i = 0; i < 100000; i++)
                 {
