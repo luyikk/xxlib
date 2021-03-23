@@ -45,7 +45,7 @@ namespace PKG.P
             base.Read(om, data);
 
             int err;
-            if ((err = data.ReadFiexd(out uint siz)) != 0) return err;
+            if ((err = data.ReadFixed(out uint siz)) != 0) return err;
             int endoffset = (int)(data.Offset - sizeof(uint) + siz);
 
             if (data.Offset >= endoffset)
@@ -65,9 +65,9 @@ namespace PKG.P
         {
             base.Write(om, data);
             var bak = data.Length;
-            data.WriteFiexd(sizeof(uint));
+            data.WriteFixed(sizeof(uint));
             om.WriteTo(data, this.z);
-            data.WriteFiexdAt(bak, (uint)(data.Length - bak));
+            data.WriteFixedAt(bak, (uint)(data.Length - bak));
         }     
 
     }
@@ -87,13 +87,13 @@ namespace PKG.P
             base.Read(om, data);
 
             int err;
-            if ((err = data.ReadFiexd(out uint siz)) != 0) return err;
+            if ((err = data.ReadFixed(out uint siz)) != 0) return err;
             int endoffset = (int)(data.Offset - sizeof(uint) + siz);
 
             if (data.Offset < endoffset && (err =  this.position.Read(om, data)) != 0)
                 return err;
 
-            if (data.Offset < endoffset && (err = data.ReadFiexd(out byte have_position2)) == 0)
+            if (data.Offset < endoffset && (err = data.ReadFixed(out byte have_position2)) == 0)
             {
                 if (have_position2 == 1)
                 {
@@ -122,17 +122,17 @@ namespace PKG.P
         {
             base.Write(om, data);
             var bak = data.Length;
-            data.WriteFiexd(sizeof(uint));
+            data.WriteFixed(sizeof(uint));
             this.position.Write(om, data);
             if (this.position2 is null)
-               data.WriteFiexd((byte)0);
+               data.WriteFixed((byte)0);
             else
             {
-                data.WriteFiexd((byte)1);
+                data.WriteFixed((byte)1);
                 this.position2.Write(om, data);
             }
             om.WriteTo(data, this.px);
-            data.WriteFiexdAt(bak, (uint)(data.Length - bak));
+            data.WriteFixedAt(bak, (uint)(data.Length - bak));
         }     
 
     }
@@ -179,7 +179,7 @@ namespace PKG
             if ((err = this.sp1.Read(om, data)) != 0)
                 return err;
 
-            if ((err = data.ReadFiexd(out byte have_sp2)) == 0)
+            if ((err = data.ReadFixed(out byte have_sp2)) == 0)
             {
                 if (have_sp2 == 1)
                 {
@@ -190,7 +190,7 @@ namespace PKG
             }
             else return err;
 
-            if ((err = data.ReadFiexd(out byte have_sp3)) == 0)
+            if ((err = data.ReadFixed(out byte have_sp3)) == 0)
             {
                 if (have_sp3 == 1)
                 {
@@ -214,17 +214,17 @@ namespace PKG
             om.WriteTo(data, this.S2);
             this.sp1.Write(om, data);
             if (this.sp2 is null)
-               data.WriteFiexd((byte)0);
+               data.WriteFixed((byte)0);
             else
             {
-                data.WriteFiexd((byte)1);
+                data.WriteFixed((byte)1);
                 this.sp2.Write(om, data);
             }
             if (this.sp3 is null)
-               data.WriteFiexd((byte)0);
+               data.WriteFixed((byte)0);
             else
             {
-                data.WriteFiexd((byte)1);
+                data.WriteFixed((byte)1);
                 this.sp3.Write(om, data);
             }
             om.WriteTo(data, this.px);
@@ -254,7 +254,7 @@ namespace PKG.P
         public int Read(xx.ObjManager om, xx.DataReader data)
         {
             int err;
-            if ((err = data.ReadFiexd(out uint siz)) != 0) return err;
+            if ((err = data.ReadFixed(out uint siz)) != 0) return err;
             int endoffset = (int)(data.Offset - sizeof(uint) + siz);
 
             if (data.Offset >= endoffset)
@@ -285,11 +285,11 @@ namespace PKG.P
         public void Write(xx.ObjManager om, xx.Data data)
         {
             var bak = data.Length;
-            data.WriteFiexd(sizeof(uint));
+            data.WriteFixed(sizeof(uint));
             om.WriteTo(data, this.X);
             om.WriteTo(data, this.Y);
             om.WriteTo(data, this.Z);
-            data.WriteFiexdAt(bak, (uint)(data.Length - bak));
+            data.WriteFixedAt(bak, (uint)(data.Length - bak));
         }
 
         public override string ToString()            
@@ -330,7 +330,7 @@ namespace PKG
             base.Read(om, data);
 
             int err;
-            if ((err = data.ReadFiexd(out uint siz)) != 0) return err;
+            if ((err = data.ReadFixed(out uint siz)) != 0) return err;
             int endoffset = (int)(data.Offset - sizeof(uint) + siz);
 
             if (data.Offset >= endoffset)
@@ -398,7 +398,7 @@ namespace PKG
         {
             base.Write(om, data);
             var bak = data.Length;
-            data.WriteFiexd(sizeof(uint));
+            data.WriteFixed(sizeof(uint));
             om.WriteTo(data, this.P1);
             om.WriteTo(data, this.P2);
             om.WriteTo(data, this.P3);
@@ -408,7 +408,7 @@ namespace PKG
             om.WriteObj(data, this.Position2);
             om.WriteObj(data, this.My);
             om.WriteObj(data, this.Positions);
-            data.WriteFiexdAt(bak, (uint)(data.Length - bak));
+            data.WriteFixedAt(bak, (uint)(data.Length - bak));
         }
 
         public override string ToString()            

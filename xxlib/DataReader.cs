@@ -19,7 +19,7 @@ namespace xx
         /// <summary>
         /// 长度
         /// </summary>
-        public int Length => len;
+        public int Length => len-offset;
 
         /// <summary>
         /// 写入偏移量
@@ -45,7 +45,7 @@ namespace xx
             this.buff = data;
             this.position = offset;
             this.offset = offset;
-            this.len = length;
+            this.len = offset+length;
         }
 
         #region Read
@@ -76,7 +76,7 @@ namespace xx
         /// 读取一个字节
         /// </summary>      
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFiexd(out byte v)
+        public int ReadFixed(out byte v)
         {
             if (position + sizeof(byte) > len)
             {
@@ -93,10 +93,10 @@ namespace xx
         /// 读取一个sbyte
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFiexd(out sbyte v)
+        public int ReadFixed(out sbyte v)
         {
             byte b;
-            var r= ReadFiexd(out b);
+            var r= ReadFixed(out b);
             v = (sbyte)b;
             return r;
         }
@@ -107,10 +107,10 @@ namespace xx
         /// <param name="v"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFiexd(out bool v)
+        public int ReadFixed(out bool v)
         {
             byte b;
-            var r = ReadFiexd(out b);
+            var r = ReadFixed(out b);
             v = b == 1;
             return r;
         }
@@ -119,7 +119,7 @@ namespace xx
         /// 读取一个 u16
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFiexd(out ushort v)
+        public int ReadFixed(out ushort v)
         {
             if (position + sizeof(ushort) > len)
             {
@@ -144,7 +144,7 @@ namespace xx
         /// 读取一个 i16
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFiexd(out short v)
+        public int ReadFixed(out short v)
         {
             if (position + sizeof(short) > len)
             {
@@ -169,7 +169,7 @@ namespace xx
         /// 读取一个 u32
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFiexd(out uint v)
+        public int ReadFixed(out uint v)
         {
             if (position + sizeof(uint) > len)
             {
@@ -194,7 +194,7 @@ namespace xx
         /// 读取一个 i32
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFiexd(out int v)
+        public int ReadFixed(out int v)
         {
             if (position + sizeof(int) > len)
             {
@@ -219,7 +219,7 @@ namespace xx
         /// 读取一个 u64
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFiexd(out ulong v)
+        public int ReadFixed(out ulong v)
         {
             if (position + sizeof(ulong) > len)
             {
@@ -244,7 +244,7 @@ namespace xx
         /// 读取一个 i64
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFiexd(out long v)
+        public int ReadFixed(out long v)
         {
             if (position + sizeof(long) > len)
             {
@@ -270,7 +270,7 @@ namespace xx
         /// 读取一个 float
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFiexd(out float v)
+        public int ReadFixed(out float v)
         {
             if (position + sizeof(float) > len)
             {
@@ -295,7 +295,7 @@ namespace xx
         /// 读取一个 float
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFiexd(out double v)
+        public int ReadFixed(out double v)
         {
             if (position + sizeof(float) > len)
             {
@@ -327,7 +327,7 @@ namespace xx
         /// 读取一个字节
         /// </summary>      
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFiexdAt(int idx,out byte v)
+        public int ReadFixedAt(int idx,out byte v)
         {
             if (idx + sizeof(byte) > len)
             {
@@ -344,10 +344,10 @@ namespace xx
         /// 读取一个sbyte
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFiexdAt(int idx, out sbyte v)
+        public int ReadFixedAt(int idx, out sbyte v)
         {
             byte b;
-            var r = ReadFiexdAt(idx,out b);
+            var r = ReadFixedAt(idx,out b);
             v = (sbyte)b;
             return r;
         }
@@ -358,10 +358,10 @@ namespace xx
         /// <param name="v"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFiexdAt(int idx,out bool v)
+        public int ReadFixedAt(int idx,out bool v)
         {
             byte b;
-            var r = ReadFiexdAt(idx,out b);
+            var r = ReadFixedAt(idx,out b);
             v = b == 1;
             return r;
         }
@@ -371,7 +371,7 @@ namespace xx
         /// 读取一个 u16
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFiexdAt(int idx,out ushort v)
+        public int ReadFixedAt(int idx,out ushort v)
         {
             if (idx + sizeof(ushort) > len)
             {
@@ -395,7 +395,7 @@ namespace xx
         /// 读取一个 i16
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFiexdAt(int idx,out short v)
+        public int ReadFixedAt(int idx,out short v)
         {
             if (idx + sizeof(short) > len)
             {
@@ -419,7 +419,7 @@ namespace xx
         /// 读取一个 u32
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFiexdAt(int idx, out uint v)
+        public int ReadFixedAt(int idx, out uint v)
         {
             if (idx + sizeof(uint) > len)
             {
@@ -443,7 +443,7 @@ namespace xx
         /// 读取一个 i32
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFiexdAt(int idx, out int v)
+        public int ReadFixedAt(int idx, out int v)
         {
             if (idx + sizeof(int) > len)
             {
@@ -467,7 +467,7 @@ namespace xx
         /// 读取一个 u64
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFiexdAt(int idx, out ulong v)
+        public int ReadFixedAt(int idx, out ulong v)
         {
             if (idx + sizeof(ulong) > len)
             {
@@ -491,7 +491,7 @@ namespace xx
         /// 读取一个 i64
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFiexdAt(int idx, out long v)
+        public int ReadFixedAt(int idx, out long v)
         {
             if (idx + sizeof(long) > len)
             {
@@ -515,7 +515,7 @@ namespace xx
         /// 读取一个 float
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFiexdAt(int idx, out float v)
+        public int ReadFixedAt(int idx, out float v)
         {
             if (idx + sizeof(float) > len)
             {
@@ -537,7 +537,7 @@ namespace xx
         /// 读取一个 float
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFiexdAt(int idx, out double v)
+        public int ReadFixedAt(int idx, out double v)
         {
             if (idx + sizeof(float) > len)
             {
@@ -692,11 +692,11 @@ namespace xx
         public byte this[int index] => buff[index];
 
         // 等效代码： if( (v & 1) > 0 ) return -(v + 1) / 2; else return v / 2;
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static short ZigZagDecode(ushort v) { return (short)((short)(v >> 1) ^ (-(short)(v & 1))); }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ZigZagDecode(uint v) { return (int)(v >> 1) ^ (-(int)(v & 1)); }
-
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long ZigZagDecode(ulong v) { return (long)(v >> 1) ^ (-(long)(v & 1)); }
     }
 }

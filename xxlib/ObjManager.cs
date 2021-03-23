@@ -41,13 +41,13 @@ namespace xx
 
         #region WriteBase
         public void WriteTo(Data data, byte b)        
-           => data.WriteFiexd(b);        
+           => data.WriteFixed(b);        
 
         public void WriteTo(Data data, sbyte b)        
-           => data.WriteFiexd(b);        
+           => data.WriteFixed(b);        
 
         public void WriteTo(Data data, bool b)        
-           => data.WriteFiexd(b);        
+           => data.WriteFixed(b);        
 
         public void WriteTo(Data data, short b)        
            => data.WriteVarInteger(b);        
@@ -68,108 +68,108 @@ namespace xx
             =>data.WriteVarInteger(b);      
 
         public void WriteTo(Data data, float b)        
-           => data.WriteFiexd(b);
+           => data.WriteFixed(b);
 
         public void WriteTo(Data data, double b)        
-           => data.WriteFiexd(b);
+           => data.WriteFixed(b);
 
         public void WriteTo(Data data, byte? b)
         {
             if (b.HasValue)
             {
-                data.WriteFiexd((byte)1);
-                data.WriteFiexd(b.Value);
+                data.WriteFixed((byte)1);
+                data.WriteFixed(b.Value);
             }
             else
-                data.WriteFiexd((byte)0);
+                data.WriteFixed((byte)0);
         }
 
         public void WriteTo(Data data, sbyte? b)
         {
             if (b.HasValue)
             {
-                data.WriteFiexd((byte)1);
-                data.WriteFiexd(b.Value);
+                data.WriteFixed((byte)1);
+                data.WriteFixed(b.Value);
             }
             else
-                data.WriteFiexd((byte)0);
+                data.WriteFixed((byte)0);
         }
 
         public void WriteTo(Data data, bool? b)
         {
             if (b.HasValue)
             {
-                data.WriteFiexd((byte)1);
-                data.WriteFiexd(b.Value);
+                data.WriteFixed((byte)1);
+                data.WriteFixed(b.Value);
             }
             else
-                data.WriteFiexd((byte)0);
+                data.WriteFixed((byte)0);
         }
 
         public void WriteTo(Data data, short? b)
         {
             if (b.HasValue)
             {
-                data.WriteFiexd((byte)1);
+                data.WriteFixed((byte)1);
                 data.WriteVarInteger(b.Value);
             }
             else
-                data.WriteFiexd((byte)0);
+                data.WriteFixed((byte)0);
         }
 
         public void WriteTo(Data data, ushort? b)
         {
             if (b.HasValue)
             {
-                data.WriteFiexd((byte)1);
+                data.WriteFixed((byte)1);
                 data.WriteVarInteger(b.Value);
             }
             else
-                data.WriteFiexd((byte)0);
+                data.WriteFixed((byte)0);
         }
 
         public void WriteTo(Data data, int? b)
         {
             if (b.HasValue)
             {
-                data.WriteFiexd((byte)1);
+                data.WriteFixed((byte)1);
                 data.WriteVarInteger(b.Value);
             }
             else
-                data.WriteFiexd((byte)0);
+                data.WriteFixed((byte)0);
         }
 
         public void WriteTo(Data data, uint? b)
         {
             if (b.HasValue)
             {
-                data.WriteFiexd((byte)1);
+                data.WriteFixed((byte)1);
                 data.WriteVarInteger(b.Value);
             }
             else
-                data.WriteFiexd((byte)0);
+                data.WriteFixed((byte)0);
         }
 
         public void WriteTo(Data data, ulong? b)
         {
             if (b.HasValue)
             {
-                data.WriteFiexd((byte)1);
+                data.WriteFixed((byte)1);
                 data.WriteVarInteger(b.Value);
             }
             else
-                data.WriteFiexd((byte)0);
+                data.WriteFixed((byte)0);
         }
 
         public void WriteTo(Data data, long? b)
         {
             if (b.HasValue)
             {
-                data.WriteFiexd((byte)1);
+                data.WriteFixed((byte)1);
                 data.WriteVarInteger(b.Value);
             }
             else
-                data.WriteFiexd((byte)0);
+                data.WriteFixed((byte)0);
         }
       
 
@@ -177,22 +177,22 @@ namespace xx
         {
             if (b.HasValue)
             {
-                data.WriteFiexd((byte)1);
-                data.WriteFiexd(b.Value);
+                data.WriteFixed((byte)1);
+                data.WriteFixed(b.Value);
             }
             else
-                data.WriteFiexd((byte)0);
+                data.WriteFixed((byte)0);
         }
 
         public void WriteTo(Data data, double? b)
         {
             if (b.HasValue)
             {
-                data.WriteFiexd((byte)1);
-                data.WriteFiexd(b.Value);
+                data.WriteFixed((byte)1);
+                data.WriteFixed(b.Value);
             }
             else
-                data.WriteFiexd((byte)0);
+                data.WriteFixed((byte)0);
         }
 
         public void WriteTo(Data data, string b)
@@ -204,17 +204,17 @@ namespace xx
         #endregion
 
         #region WriteClass
-        public void WriteTo<T>(Data data,T v) where T : class,ISerde,new()
+        public void WriteTo<T>(Data data,T v) where T : class,ISerde
         {
             data.PtrStore.Clear();
             WriteObj(data, v);
         }
 
 
-        public void WriteObj<T>(Data data, T v) where T : class, ISerde, new()
+        public void WriteObj<T>(Data data, T v) where T :  class,ISerde
         {
             if (v is null)
-                data.WriteFiexd((byte)0);
+                data.WriteFixed((byte)0);
             else
             {
                 if (!data.PtrStore.TryGetValue(v, out var offset))
@@ -237,20 +237,20 @@ namespace xx
         {
             if(v is null)
             {
-                data.WriteFiexd((byte)0);
+                data.WriteFixed((byte)0);
                 return;
             }
             data.WriteVarInteger((uint)v.Length);
             data.WriteBuf(v);
         }
 
-        public void WriteTo<T>(Data data,T[] v) where T : class, ISerde, new()
+        public void WriteTo<T>(Data data,T[] v) where T : class, ISerde
         {
             data.PtrStore.Clear();
             WriteObj(data, v);
         }
 
-        public void WriteObj<T>(Data data, T[] v) where T : class, ISerde, new()
+        public void WriteObj<T>(Data data, T[] v) where T : class, ISerde
         {          
             data.WriteVarInteger((uint)v.Length);
             foreach (var p in v)
@@ -291,7 +291,7 @@ namespace xx
             }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
-                data.WriteFiexd(p);
+                data.WriteFixed(p);
         }
 
         public void WriteTo(Data data, List<sbyte> v)
@@ -303,7 +303,7 @@ namespace xx
             }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
-                data.WriteFiexd(p);
+                data.WriteFixed(p);
         }
 
         public void WriteTo(Data data, List<bool> v)
@@ -315,7 +315,7 @@ namespace xx
             }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
-                data.WriteFiexd(p);
+                data.WriteFixed(p);
         }
 
         public void WriteTo(Data data, List<short> v)
@@ -399,7 +399,7 @@ namespace xx
             }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
-                data.WriteFiexd(p);
+                data.WriteFixed(p);
         }
 
         public void WriteTo(Data data, List<float> v)
@@ -411,7 +411,7 @@ namespace xx
             }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
-                data.WriteFiexd(p);
+                data.WriteFixed(p);
         }
 
         public void WriteTo(Data data, List<string> v)
@@ -567,13 +567,13 @@ namespace xx
 
         #region ReadBase
         public int ReadFrom(DataReader data, out byte v)
-            => data.ReadFiexd(out v);
+            => data.ReadFixed(out v);
 
         public int ReadFrom(DataReader data, out sbyte v)
-          => data.ReadFiexd(out v);
+          => data.ReadFixed(out v);
 
         public int ReadFrom(DataReader data, out bool v)
-          => data.ReadFiexd(out v);
+          => data.ReadFixed(out v);
 
         public int ReadFrom(DataReader data, out short v)
           => data.ReadVarInteger(out v);
@@ -594,22 +594,22 @@ namespace xx
           => data.ReadVarInteger(out v);
 
         public int ReadFrom(DataReader data, out float v)
-          => data.ReadFiexd(out v);
+          => data.ReadFixed(out v);
 
         public int ReadFrom(DataReader data, out double v)
-          => data.ReadFiexd(out v);
+          => data.ReadFixed(out v);
 
         public int ReadFrom(DataReader data, out string v)        
           => data.ReadVarInteger(out v);
 
         public int ReadFrom(DataReader data, out byte? v)
         {
-            var err = data.ReadFiexd(out byte have);
+            var err = data.ReadFixed(out byte have);
             if (err == 0)
             {
                 if (have == 1)
                 {
-                    var r = data.ReadFiexd(out byte b);
+                    var r = data.ReadFixed(out byte b);
                     v = b;
                     return r;
                 }
@@ -628,12 +628,12 @@ namespace xx
 
         public int ReadFrom(DataReader data, out sbyte? v)
         {
-            var err = data.ReadFiexd(out byte have);
+            var err = data.ReadFixed(out byte have);
             if (err == 0)
             {
                 if (have == 1)
                 {
-                    var r = data.ReadFiexd(out sbyte b);
+                    var r = data.ReadFixed(out sbyte b);
                     v = b;
                     return r;
                 }
@@ -652,12 +652,12 @@ namespace xx
 
         public int ReadFrom(DataReader data, out bool? v)
         {
-            var err = data.ReadFiexd(out byte have);
+            var err = data.ReadFixed(out byte have);
             if (err == 0)
             {
                 if (have == 1)
                 {
-                    var r = data.ReadFiexd(out bool b);
+                    var r = data.ReadFixed(out bool b);
                     v = b;
                     return r;
                 }
@@ -676,7 +676,7 @@ namespace xx
 
         public int ReadFrom(DataReader data, out short? v)
         {
-            var err = data.ReadFiexd(out byte have);
+            var err = data.ReadFixed(out byte have);
             if (err == 0)
             {
                 if (have == 1)
@@ -700,7 +700,7 @@ namespace xx
 
         public int ReadFrom(DataReader data, out ushort? v)
         {
-            var err = data.ReadFiexd(out byte have);
+            var err = data.ReadFixed(out byte have);
             if (err == 0)
             {
                 if (have == 1)
@@ -724,7 +724,7 @@ namespace xx
 
         public int ReadFrom(DataReader data, out int? v)
         {
-            var err = data.ReadFiexd(out byte have);
+            var err = data.ReadFixed(out byte have);
             if (err == 0)
             {
                 if (have == 1)
@@ -748,7 +748,7 @@ namespace xx
 
         public int ReadFrom(DataReader data, out uint? v)
         {
-            var err = data.ReadFiexd(out byte have);
+            var err = data.ReadFixed(out byte have);
             if (err == 0)
             {
                 if (have == 1)
@@ -772,7 +772,7 @@ namespace xx
 
         public int ReadFrom(DataReader data, out long? v)
         {
-            var err = data.ReadFiexd(out byte have);
+            var err = data.ReadFixed(out byte have);
             if (err == 0)
             {
                 if (have == 1)
@@ -796,7 +796,7 @@ namespace xx
 
         public int ReadFrom(DataReader data, out ulong? v)
         {
-            var err = data.ReadFiexd(out byte have);
+            var err = data.ReadFixed(out byte have);
             if (err == 0)
             {
                 if (have == 1)
@@ -820,12 +820,12 @@ namespace xx
 
         public int ReadFrom(DataReader data, out float? v)
         {
-            var err = data.ReadFiexd(out byte have);
+            var err = data.ReadFixed(out byte have);
             if (err == 0)
             {
                 if (have == 1)
                 {
-                    var r = data.ReadFiexd(out float b);
+                    var r = data.ReadFixed(out float b);
                     v = b;
                     return r;
                 }
@@ -844,12 +844,12 @@ namespace xx
 
         public int ReadFrom(DataReader data, out double? v)
         {
-            var err = data.ReadFiexd(out byte have);
+            var err = data.ReadFixed(out byte have);
             if (err == 0)
             {
                 if (have == 1)
                 {
-                    var r = data.ReadFiexd(out double b);
+                    var r = data.ReadFixed(out double b);
                     v = b;
                     return r;
                 }
@@ -1041,7 +1041,7 @@ namespace xx
                 v = new List<byte>();
                 for (int i = 0; i < len; i++)
                 {
-                    if ((err = data.ReadFiexd(out byte b)) == 0)
+                    if ((err = data.ReadFixed(out byte b)) == 0)
                         v.Add(b);
                 }                
             }
@@ -1057,7 +1057,7 @@ namespace xx
                 v = new List<sbyte>();
                 for (int i = 0; i < len; i++)
                 {
-                    if ((err = data.ReadFiexd(out sbyte b)) == 0)
+                    if ((err = data.ReadFixed(out sbyte b)) == 0)
                         v.Add(b);
                 }
             }
@@ -1073,7 +1073,7 @@ namespace xx
                 v = new List<bool>();
                 for (int i = 0; i < len; i++)
                 {
-                    if ((err = data.ReadFiexd(out bool b)) == 0)
+                    if ((err = data.ReadFixed(out bool b)) == 0)
                         v.Add(b);
                 }
             }

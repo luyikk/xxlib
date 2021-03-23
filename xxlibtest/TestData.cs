@@ -46,9 +46,9 @@ namespace xxlibtest
                 for (int i = 0; i < 8; i++)
                     Assert.True(data[i] == i + 1);
 
-                data.WriteFiexd((byte)9);
-                data.WriteFiexd((byte)10);
-                data.WriteFiexd((byte)11);
+                data.WriteFixed((byte)9);
+                data.WriteFixed((byte)10);
+                data.WriteFixed((byte)11);
 
 
                 for (int i = 0; i < 11; i++)
@@ -82,19 +82,19 @@ namespace xxlibtest
         {
             {
                 using var data = new xx.Data();
-                data.WriteFiexd((byte)1);
-                data.WriteFiexd((byte)2);
-                data.WriteFiexd((byte)3);
-                data.WriteFiexd((byte)4);
+                data.WriteFixed((byte)1);
+                data.WriteFixed((byte)2);
+                data.WriteFixed((byte)3);
+                data.WriteFixed((byte)4);
                 Assert.True(data.Length == 4);
 
                 for (int i = 0; i < 4; i++)
                     Assert.True(data[i] == i + 1);
 
-                data.WriteFiexd((sbyte)5);
-                data.WriteFiexd((sbyte)6);
-                data.WriteFiexd((sbyte)7);
-                data.WriteFiexd((sbyte)8);
+                data.WriteFixed((sbyte)5);
+                data.WriteFixed((sbyte)6);
+                data.WriteFixed((sbyte)7);
+                data.WriteFixed((sbyte)8);
 
                 for (int i = 0; i < 8; i++)
                     Assert.True(data[i] == i + 1);
@@ -103,7 +103,7 @@ namespace xxlibtest
 
             {
                 using var data = new xx.Data();
-                data.WriteFiexd(ushort.MaxValue);
+                data.WriteFixed(ushort.MaxValue);
 
                 Assert.True(data[0] ==255);
                 Assert.True(data[1] == 255);
@@ -111,7 +111,7 @@ namespace xxlibtest
             }
             {
                 using var data = new xx.Data();
-                data.WriteFiexd(short.MaxValue);
+                data.WriteFixed(short.MaxValue);
 
                 Assert.True(data[0] == 255);
                 Assert.True(data[1] == 127);
@@ -120,7 +120,7 @@ namespace xxlibtest
 
             {
                 using var data = new xx.Data();
-                data.WriteFiexd(uint.MaxValue);
+                data.WriteFixed(uint.MaxValue);
 
                 Assert.True(data[0] == 255);
                 Assert.True(data[1] == 255);
@@ -130,7 +130,7 @@ namespace xxlibtest
             }
             {
                 using var data = new xx.Data();
-                data.WriteFiexd(int.MaxValue);
+                data.WriteFixed(int.MaxValue);
 
                 Assert.True(data[0] == 255);
                 Assert.True(data[1] == 255);
@@ -142,7 +142,7 @@ namespace xxlibtest
 
             {
                 using var data = new xx.Data();
-                data.WriteFiexd(ulong.MaxValue);
+                data.WriteFixed(ulong.MaxValue);
 
                 Assert.True(data[0] == 255);
                 Assert.True(data[1] == 255);
@@ -156,7 +156,7 @@ namespace xxlibtest
             }
             {
                 using var data = new xx.Data();
-                data.WriteFiexd(long.MaxValue);
+                data.WriteFixed(long.MaxValue);
 
                 Assert.True(data[0] == 255);
                 Assert.True(data[1] == 255);
@@ -173,7 +173,7 @@ namespace xxlibtest
 
                 for (int i = 0; i < 10000; i++)
                 {
-                    data.WriteFiexd(int.MaxValue);
+                    data.WriteFixed(int.MaxValue);
                 }
 
                 var buff = data.ToArray();           
@@ -190,7 +190,7 @@ namespace xxlibtest
                 data.Fill( new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
                 data.WriteBufAt(2, new byte[] { 1, 2, 3, 4 });
                 Assert.True(data.Length == 8);
-                data.WriteFiexdAt(8, uint.MaxValue);
+                data.WriteFixedAt(8, uint.MaxValue);
                 Assert.True(data.Length == 12);
 
                 var buff = data.ToData();
@@ -212,10 +212,10 @@ namespace xxlibtest
             {
                 using var data = new xx.Data();
                 data.Fill(new byte[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 });
-                data.WriteFiexdAt(0, byte.MaxValue);
-                data.WriteFiexdAt(1, ushort.MaxValue);
-                data.WriteFiexdAt(3, uint.MaxValue);
-                data.WriteFiexdAt(7, ulong.MaxValue);
+                data.WriteFixedAt(0, byte.MaxValue);
+                data.WriteFixedAt(1, ushort.MaxValue);
+                data.WriteFixedAt(3, uint.MaxValue);
+                data.WriteFixedAt(7, ulong.MaxValue);
                 Assert.True(data.Length == 15);
                 var buff = data.ToData();
                 Assert.Equal(buff, new byte[] { 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,255,255,255 });
@@ -258,108 +258,108 @@ namespace xxlibtest
             using var data = new xx.Data();
 
             {              
-                data.WriteFiexd((byte)1);
-                data.WriteFiexd((sbyte)2);
-                data.WriteFiexd((short)3);
-                data.WriteFiexd((ushort)4);
-                data.WriteFiexd((int)5);
-                data.WriteFiexd((uint)6);
-                data.WriteFiexd((long)7);
-                data.WriteFiexd((ulong)8);
-                data.WriteFiexd(true);
-                data.WriteFiexd(false);
-                data.WriteFiexd(0.5f);
-                data.WriteFiexd(0.55);
+                data.WriteFixed((byte)1);
+                data.WriteFixed((sbyte)2);
+                data.WriteFixed((short)3);
+                data.WriteFixed((ushort)4);
+                data.WriteFixed((int)5);
+                data.WriteFixed((uint)6);
+                data.WriteFixed((long)7);
+                data.WriteFixed((ulong)8);
+                data.WriteFixed(true);
+                data.WriteFixed(false);
+                data.WriteFixed(0.5f);
+                data.WriteFixed(0.55);
 
                 var (buff, len) = data.ToArray();
                 var read = new xx.DataReader(buff, 0,len);
-                Assert.True(read.ReadFiexd(out byte a) == 0);
+                Assert.True(read.ReadFixed(out byte a) == 0);
                 Assert.Equal(1, a);
 
-                Assert.True(read.ReadFiexd(out sbyte b) == 0);
+                Assert.True(read.ReadFixed(out sbyte b) == 0);
                 Assert.Equal(2, b);
 
-                Assert.True(read.ReadFiexd(out short c) == 0);
+                Assert.True(read.ReadFixed(out short c) == 0);
                 Assert.Equal(3, c);
 
-                Assert.True(read.ReadFiexd(out ushort d) == 0);
+                Assert.True(read.ReadFixed(out ushort d) == 0);
                 Assert.Equal(4, d);
 
-                Assert.True(read.ReadFiexd(out int e) == 0);
+                Assert.True(read.ReadFixed(out int e) == 0);
                 Assert.Equal(5, e);
 
-                Assert.True(read.ReadFiexd(out uint f) == 0);
+                Assert.True(read.ReadFixed(out uint f) == 0);
                 Assert.Equal((uint)6, f);
 
-                Assert.True(read.ReadFiexd(out long g) == 0);
+                Assert.True(read.ReadFixed(out long g) == 0);
                 Assert.Equal(7, g);
 
-                Assert.True(read.ReadFiexd(out ulong h) == 0);
+                Assert.True(read.ReadFixed(out ulong h) == 0);
                 Assert.Equal((ulong)8, h);
 
-                Assert.True(read.ReadFiexd(out bool i) == 0);
+                Assert.True(read.ReadFixed(out bool i) == 0);
                 Assert.True(i);
 
-                Assert.True(read.ReadFiexd(out bool j) == 0);
+                Assert.True(read.ReadFixed(out bool j) == 0);
                 Assert.False(j);
 
-                Assert.True(read.ReadFiexd(out float k) == 0);
+                Assert.True(read.ReadFixed(out float k) == 0);
                 Assert.Equal(0.5f, k);
 
-                Assert.True(read.ReadFiexd(out double l) == 0);
+                Assert.True(read.ReadFixed(out double l) == 0);
                 Assert.Equal(0.55, l);
 
             }
             {               
-                data.WriteFiexd((byte)1);
-                data.WriteFiexd((sbyte)2);
-                data.WriteFiexd((short)3);
-                data.WriteFiexd((ushort)4);
-                data.WriteFiexd((int)5);
-                data.WriteFiexd((uint)6);
-                data.WriteFiexd((long)7);
-                data.WriteFiexd((ulong)8);
-                data.WriteFiexd(true);
-                data.WriteFiexd(false);
-                data.WriteFiexd(0.5f);
-                data.WriteFiexd(0.55);
+                data.WriteFixed((byte)1);
+                data.WriteFixed((sbyte)2);
+                data.WriteFixed((short)3);
+                data.WriteFixed((ushort)4);
+                data.WriteFixed((int)5);
+                data.WriteFixed((uint)6);
+                data.WriteFixed((long)7);
+                data.WriteFixed((ulong)8);
+                data.WriteFixed(true);
+                data.WriteFixed(false);
+                data.WriteFixed(0.5f);
+                data.WriteFixed(0.55);
 
                 var (buff, len) = data.ToArray();
                 var read = new xx.DataReader(buff,0, len);
-                Assert.True(read.ReadFiexdAt(0,out byte a) == 0);
+                Assert.True(read.ReadFixedAt(0,out byte a) == 0);
                 Assert.Equal(1, a);
 
-                Assert.True(read.ReadFiexdAt(1,out sbyte b) == 0);
+                Assert.True(read.ReadFixedAt(1,out sbyte b) == 0);
                 Assert.Equal(2, b);
 
-                Assert.True(read.ReadFiexdAt(2,out short c) == 0);
+                Assert.True(read.ReadFixedAt(2,out short c) == 0);
                 Assert.Equal(3, c);
 
-                Assert.True(read.ReadFiexdAt(4,out ushort d) == 0);
+                Assert.True(read.ReadFixedAt(4,out ushort d) == 0);
                 Assert.Equal(4, d);
 
-                Assert.True(read.ReadFiexdAt(6,out int e) == 0);
+                Assert.True(read.ReadFixedAt(6,out int e) == 0);
                 Assert.Equal(5, e);
 
-                Assert.True(read.ReadFiexdAt(10,out uint f) == 0);
+                Assert.True(read.ReadFixedAt(10,out uint f) == 0);
                 Assert.Equal((uint)6, f);
 
-                Assert.True(read.ReadFiexdAt(14,out long g) == 0);
+                Assert.True(read.ReadFixedAt(14,out long g) == 0);
                 Assert.Equal(7, g);
 
-                Assert.True(read.ReadFiexdAt(22,out ulong h) == 0);
+                Assert.True(read.ReadFixedAt(22,out ulong h) == 0);
                 Assert.Equal((ulong)8, h);
 
-                Assert.True(read.ReadFiexdAt(30,out bool i) == 0);
+                Assert.True(read.ReadFixedAt(30,out bool i) == 0);
                 Assert.True(i);
 
-                Assert.True(read.ReadFiexdAt(31,out bool j) == 0);
+                Assert.True(read.ReadFixedAt(31,out bool j) == 0);
                 Assert.False(j);
 
-                Assert.True(read.ReadFiexdAt(32,out float k) == 0);
+                Assert.True(read.ReadFixedAt(32,out float k) == 0);
                 Assert.Equal(0.5f, k);
 
-                Assert.True(read.ReadFiexdAt(36,out double l) == 0);
+                Assert.True(read.ReadFixedAt(36,out double l) == 0);
                 Assert.Equal(0.55, l);
 
                 Assert.True(read.Offset == 0);
@@ -416,14 +416,14 @@ namespace xxlibtest
             {
                
                 for (int i = 0; i < 100000; i++)                
-                    data.WriteFiexd(i);
+                    data.WriteFixed(i);
 
                 var (buff, len) = data.ToArray();
                 var read = new xx.DataReader(buff, 0,len);
 
                 for (int i = 0; i < 100000; i++)
                 {
-                    Assert.True(read.ReadFiexd(out int v) == 0);
+                    Assert.True(read.ReadFixed(out int v) == 0);
                     Assert.Equal(i, v);
                 }
 

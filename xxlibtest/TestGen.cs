@@ -60,7 +60,7 @@ namespace xxlibtest
                 var buff_p = new byte[10 + len];
                 Buffer.BlockCopy(buff, 0, buff_p, 10, len);
 
-                var read = new xx.DataReader(buff_p, 10, buff_p.Length);
+                var read = new xx.DataReader(buff_p, 10, len);
                 Assert.True(objmanager.ReadFrom(read, out Foo a) == 0);
                 Assert.True(foo.S1 == a.S1);
                 Assert.True(foo.S2 == a.S2);

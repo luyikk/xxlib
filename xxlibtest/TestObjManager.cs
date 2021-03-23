@@ -176,7 +176,7 @@ namespace xxlibtest
             public int Read(ObjManager om, DataReader data)
             {
                 int err;
-                if ((err = data.ReadFiexd(out uint siz)) != 0) return err;
+                if ((err = data.ReadFixed(out uint siz)) != 0) return err;
                 int endoffset = (int)(data.Offset - sizeof(uint) + siz);
 
                 if (data.Offset > endoffset)
@@ -205,10 +205,10 @@ namespace xxlibtest
             public void Write(ObjManager om, Data data)
             {
                 var bak = data.Length;
-                data.WriteFiexd(sizeof(uint));
+                data.WriteFixed(sizeof(uint));
                 om.WriteTo(data, this.S1);
                 om.WriteTo(data, this.S2);
-                data.WriteFiexdAt(bak, (uint)(data.Length - bak));
+                data.WriteFixedAt(bak, (uint)(data.Length - bak));
             }
 
         }
@@ -288,7 +288,7 @@ namespace xxlibtest
             public int Read(ObjManager om, DataReader data)
             {
                 int err;
-                if ((err = data.ReadFiexd(out uint siz)) != 0) return err;
+                if ((err = data.ReadFixed(out uint siz)) != 0) return err;
                 int endoffset = (int)(data.Offset - sizeof(uint) + siz);
 
                 if (data.Offset > endoffset)
@@ -316,10 +316,10 @@ namespace xxlibtest
             public void Write(ObjManager om, Data data)
             {
                 var bak = data.Length;
-                data.WriteFiexd(sizeof(uint));
+                data.WriteFixed(sizeof(uint));
                 om.WriteTo(data, this.S1);
                 om.WriteTo(data, this.S2);
-                data.WriteFiexdAt(bak, (uint)(data.Length - bak));
+                data.WriteFixedAt(bak, (uint)(data.Length - bak));
             }
         }
 
@@ -336,7 +336,7 @@ namespace xxlibtest
             public int Read(ObjManager om, DataReader data)
             {
                 int err;
-                if ((err = data.ReadFiexd(out uint siz)) != 0) return err;
+                if ((err = data.ReadFixed(out uint siz)) != 0) return err;
                 int endoffset = (int)(data.Offset - sizeof(uint) + siz);
 
                 if (data.Offset >= endoffset)
@@ -362,10 +362,10 @@ namespace xxlibtest
             public void Write(ObjManager om, Data data)
             {
                 var bak = data.Length;
-                data.WriteFiexd(sizeof(uint));
+                data.WriteFixed(sizeof(uint));
                 om.WriteTo(data, this.X);
                 om.WriteTo(data, this.Y);
-                data.WriteFiexdAt(bak, (uint)(data.Length - bak));
+                data.WriteFixedAt(bak, (uint)(data.Length - bak));
             }
         }
 
@@ -394,7 +394,7 @@ namespace xxlibtest
             {
                 base.Read(om, data);
                 int err;
-                if ((err = data.ReadFiexd(out uint siz)) != 0) return err;
+                if ((err = data.ReadFixed(out uint siz)) != 0) return err;
                 int endoffset = (int)(data.Offset - sizeof(uint) + siz);
 
                 if (data.Offset >= endoffset)
@@ -446,7 +446,7 @@ namespace xxlibtest
                 if (data.Offset < endoffset && (err = ST2.Read(om, data)) != 0)
                     return err;
 
-                if (data.Offset < endoffset && (err = data.ReadFiexd(out byte have_s3)) == 0)
+                if (data.Offset < endoffset && (err = data.ReadFixed(out byte have_s3)) == 0)
                 {
                     if (have_s3 == 1)
                     {
@@ -507,7 +507,7 @@ namespace xxlibtest
                 //    return err;
 
 
-                //if ((err = data.ReadFiexd(out byte have_st3)) == 0)
+                //if ((err = data.ReadFixed(out byte have_st3)) == 0)
                 //{
                 //    if (have_st3 == 1)
                 //    {
@@ -526,7 +526,7 @@ namespace xxlibtest
                 base.Write(om, data);
 
                 var bak = data.Length;
-                data.WriteFiexd(sizeof(uint));
+                data.WriteFixed(sizeof(uint));
                 om.WriteTo(data, this.P1);
                 om.WriteTo(data, this.P2);
                 om.WriteTo(data, this.P3);
@@ -537,13 +537,13 @@ namespace xxlibtest
                 this.ST1.Write(om, data);
                 this.ST2.Write(om, data);
                 if (this.ST3 is null)
-                    data.WriteFiexd((byte)0);
+                    data.WriteFixed((byte)0);
                 else
                 {
-                    data.WriteFiexd((byte)1);
+                    data.WriteFixed((byte)1);
                     this.ST3.Write(om, data);
                 }
-                data.WriteFiexdAt(bak, (uint)(data.Length - bak));
+                data.WriteFixedAt(bak, (uint)(data.Length - bak));
 
 
                 //om.WriteTo(data, this.P1);
@@ -557,10 +557,10 @@ namespace xxlibtest
                 //this.ST1.Write(om, data);
                 //this.ST2.Write(om, data);
                 //if (this.ST3 is null)
-                //    data.WriteFiexd((byte)0);
+                //    data.WriteFixed((byte)0);
                 //else
                 //{
-                //    data.WriteFiexd((byte)1);
+                //    data.WriteFixed((byte)1);
                 //    this.ST3.Write(om, data);
                 //}
             }

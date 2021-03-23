@@ -124,7 +124,7 @@ namespace xx
         /// 写入定长 byte
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexd(byte v)
+        public void WriteFixed(byte v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -141,20 +141,20 @@ namespace xx
         /// 写入定长 sbyte
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexd(sbyte v) => WriteFiexd((byte)v);
+        public void WriteFixed(sbyte v) => WriteFixed((byte)v);
 
         /// <summary>
         /// 写入bool
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexd(bool v)
-            => WriteFiexd(v ? (byte)1 : (byte)0);
+        public void WriteFixed(bool v)
+            => WriteFixed(v ? (byte)1 : (byte)0);
 
         /// <summary>
         /// 写入定长 ushort
         /// </summary>   
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexd(ushort v)
+        public void WriteFixed(ushort v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -175,7 +175,7 @@ namespace xx
         /// 写入定长 short
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexd(short v)
+        public void WriteFixed(short v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -197,7 +197,7 @@ namespace xx
         /// 写入定长 uint
         /// </summary>   
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexd(uint v)
+        public void WriteFixed(uint v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -221,7 +221,7 @@ namespace xx
         /// 写入定长 int
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexd(int v)
+        public void WriteFixed(int v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -245,7 +245,7 @@ namespace xx
         /// 写入定长 ulong
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexd(ulong v)
+        public void WriteFixed(ulong v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -273,7 +273,7 @@ namespace xx
         /// 写入定长 long
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexd(long v)
+        public void WriteFixed(long v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -300,7 +300,7 @@ namespace xx
         /// 写入定长 float
         /// </summary>   
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexd(float v)
+        public void WriteFixed(float v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -335,7 +335,7 @@ namespace xx
         /// 写入定长 double
         /// </summary>      
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexd(double v)
+        public void WriteFixed(double v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -403,7 +403,7 @@ namespace xx
         /// 写入定长 byte
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexdAt(int idx, byte v)
+        public void WriteFixedAt(int idx, byte v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -419,20 +419,20 @@ namespace xx
         /// 写入定长 sbyte
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexdAt(int idx, sbyte v) => WriteFiexdAt(idx,(byte)v);
+        public void WriteFixedAt(int idx, sbyte v) => WriteFixedAt(idx,(byte)v);
 
         /// <summary>
         /// 写入bool
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexdAt(int idx, bool v)
-            => WriteFiexdAt(idx,v ? (byte)1 : (byte)0);
+        public void WriteFixedAt(int idx, bool v)
+            => WriteFixedAt(idx,v ? (byte)1 : (byte)0);
 
         /// <summary>
         /// 写入定长 ushort
         /// </summary>   
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexdAt(int idx, ushort v)
+        public void WriteFixedAt(int idx, ushort v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -452,7 +452,7 @@ namespace xx
         /// 写入定长 short
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexdAt(int idx, short v)
+        public void WriteFixedAt(int idx, short v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -472,7 +472,7 @@ namespace xx
         /// 写入定长 uint
         /// </summary>   
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexdAt(int idx, uint v)
+        public void WriteFixedAt(int idx, uint v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -495,7 +495,7 @@ namespace xx
         /// 写入定长 int
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexdAt(int idx, int v)
+        public void WriteFixedAt(int idx, int v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -518,7 +518,7 @@ namespace xx
         /// 写入定长 ulong
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexdAt(int idx, ulong v)
+        public void WriteFixedAt(int idx, ulong v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -544,7 +544,7 @@ namespace xx
         /// 写入定长 long
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexdAt(int idx, long v)
+        public void WriteFixedAt(int idx, long v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -571,7 +571,7 @@ namespace xx
         /// 写入定长 float
         /// </summary>   
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexdAt(int idx, float v)
+        public void WriteFixedAt(int idx, float v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -592,7 +592,7 @@ namespace xx
         /// 写入定长 double
         /// </summary>      
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void WriteFiexdAt(int idx, double v)
+        public void WriteFixedAt(int idx, double v)
         {
             if (ischecknull())
                 throw new ObjectDisposedException("Data");
@@ -697,7 +697,7 @@ namespace xx
         /// 清空DATA
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private void Clear()
+        public void Clear()
         {          
             len= 0;            
         }
