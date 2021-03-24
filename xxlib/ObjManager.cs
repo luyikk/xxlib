@@ -209,12 +209,15 @@ namespace xx
         #region WriteClass
         public void WriteTo<T>(Data data, T v) where T : class, ISerde
         {
+          
             data.PtrStore.Clear();
-            WriteObj(data, v);
+            if (v != null)
+                WriteObj(data, v, true);
+            else throw new NullReferenceException(" v is null");
         }
 
 
-        public void WriteObj<T>(Data data, T v) where T : class, ISerde
+        public void WriteObj<T>(Data data, T v,bool isfirst= false) where T : class, ISerde
         {
             if (v is null)
                 data.WriteFixed((byte)0);
@@ -225,7 +228,8 @@ namespace xx
                     var typeid = v.GetTypeid();
                     offset = Convert.ToUInt32(data.PtrStore.Count + 1);
                     data.PtrStore.Add(v, offset);
-                    data.WriteVarInteger(offset);
+                    if(!isfirst)
+                        data.WriteVarInteger(offset);
                     data.WriteVarInteger(typeid);
                     v.Write(this, data);
                 }
@@ -876,45 +880,51 @@ namespace xx
         public int ReadFrom(DataReader data, out ISerde v)
         {
             data.IdxStore.Clear();
-            return ReadISerde(data, out v);
+            return ReadISerde(data, out v,true);
 
         }
 
 
-        public int ReadISerde(DataReader data, out ISerde v)
+        public int ReadISerde(DataReader data, out ISerde v, bool isfirst = false)
         {
-            v = default;
+            v = null;
+
+            uint offset = 1;
             int err;
-            if ((err = data.ReadVarInteger(out uint offset)) == 0)
+
+            if (!isfirst)
             {
-                if (offset == 0)
-                    return 0;
+                if ((err = data.ReadVarInteger(out offset)) != 0)
+                    return err;
+            }
 
-                if (offset == data.IdxStore.Count + 1)
-                {
-                    if ((err = data.ReadVarInteger(out ushort typeid)) == 0)
-                    {
-                        v = Create(typeid);
-                        if (v != null)
-                        {
-                            data.IdxStore.Add(v);
-                            return v.Read(this, data);
-                        }
-                        else
-                            throw new KeyNotFoundException($"create obj not found typeid:{typeid}");
-                    }
-                }
-                else
-                {
-                    if (offset > data.IdxStore.Count)
-                        throw new KeyNotFoundException($"offset :{offset} error");
+            if (offset == 0)
+                return 0;
 
-                    v = data.IdxStore[(int)offset - 1];
+            if (offset == data.IdxStore.Count + 1)
+            {
+                if ((err = data.ReadVarInteger(out ushort typeid)) == 0)
+                {
+                    v = Create(typeid);
                     if (v != null)
-                        return 0;
+                    {
+                        data.IdxStore.Add(v);
+                        return v.Read(this, data);
+                    }
                     else
-                        throw new KeyNotFoundException($"offset :{offset} obj not as ISerde");
+                        throw new KeyNotFoundException($"create obj not found typeid:{typeid}");
                 }
+            }
+            else
+            {
+                if (offset > data.IdxStore.Count)
+                    throw new KeyNotFoundException($"offset :{offset} error");
+
+                v = data.IdxStore[(int)offset - 1];
+                if (v != null)
+                    return 0;
+                else
+                    throw new KeyNotFoundException($"offset :{offset} obj not as ISerde");
             }
 
             return err;
@@ -923,46 +933,54 @@ namespace xx
         public int ReadFrom<T>(DataReader data, out T v) where T : class, ISerde, new()
         {
             data.IdxStore.Clear();
-            return ReadObj(data, out v);
+            return ReadObj(data, out v,true);
         }
 
-        public int ReadObj<T>(DataReader data, out T v) where T : class, ISerde, new()
+        public int ReadObj<T>(DataReader data, out T v, bool isfirst = false) where T : class, ISerde, new()
         {
             v = null;
+
+            uint offset =1;
             int err;
-            if ((err = data.ReadVarInteger(out uint offset)) == 0)
+
+            if (!isfirst)
+            {                
+                if ((err = data.ReadVarInteger(out offset)) != 0)
+                    return err;            
+            }           
+            
+            if (offset == 0)
+                return 0;
+
+            if (offset == data.IdxStore.Count + 1)
             {
-                if (offset == 0)
-                    return 0;
-
-                if (offset == data.IdxStore.Count + 1)
+                if ((err = data.ReadVarInteger(out ushort typeid)) == 0)
                 {
-                    if ((err = data.ReadVarInteger(out ushort typeid)) == 0)
-                    {
-                        v = Create(typeid) as T;
-                        if (v != null)
-                        {
-                            data.IdxStore.Add(v);
-                            return v.Read(this, data);
-                        }
-                        else
-                            throw new KeyNotFoundException($"create obj not found typeid:{typeid}");
-                    }
-                }
-                else
-                {
-                    if (offset > data.IdxStore.Count)
-                        throw new KeyNotFoundException($"offset :{offset} error");
-
-                    v = data.IdxStore[(int)offset - 1] as T;
+                    v = Create(typeid) as T;
                     if (v != null)
-                        return 0;
+                    {
+                        data.IdxStore.Add(v);
+                        return v.Read(this, data);
+                    }
                     else
-                        throw new KeyNotFoundException($"offset :{offset} obj not as ISerde");
+                        throw new KeyNotFoundException($"create obj not found typeid:{typeid}");
                 }
+               
+            }
+            else
+            {
+                if (offset > data.IdxStore.Count)
+                    throw new KeyNotFoundException($"offset :{offset} error");
+
+                v = data.IdxStore[(int)offset - 1] as T;
+                if (v != null)
+                    return 0;
+                else
+                    throw new KeyNotFoundException($"offset :{offset} obj not as ISerde");
             }
 
             return err;
+
         }
         #endregion
 
