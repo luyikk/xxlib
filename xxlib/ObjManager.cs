@@ -24,6 +24,9 @@ namespace xx
         {
             if (typeTypeIdMappings.ContainsKey(typeof(T)))
                 throw new IndexOutOfRangeException($"repeat typeid:{typeid} check [TypeId]");
+            else
+                typeTypeIdMappings.Add(typeof(T), typeid);
+
             typeIdCreatorMappings[typeid] = () => { return new T(); };
         }
 

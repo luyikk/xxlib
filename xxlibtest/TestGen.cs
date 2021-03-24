@@ -47,11 +47,13 @@ namespace xxlibtest
                 foo.sp1.y = 2;
                 foo.sp1.z = 3;
                 foo.px = 100;
-
+                
                 foo.sp3 = new Point3();
                 foo.sp3.x = 1;
                 foo.sp3.y = 2;
                 foo.sp3.z = 3;
+
+                foo.Point2List.Add(new Point3 { x = 1, y = 2, z = 3 });
 
                 objmanager.WriteTo(data, foo);
                 var (buff, len) = data.ToArray();
@@ -106,6 +108,10 @@ namespace xxlibtest
                     Assert.True(foo.Position2.X == b.Position2.X);
                     Assert.True(foo.Position2.Y == b.Position2.Y);
                     Assert.Equal(b, b.My);
+                    Assert.True(foo.Point2List[0].x == 1);
+                    Assert.True(foo.Point2List[0].y == 2);
+                    Assert.True(foo.Point2List[0].z == 3);
+
                 }
                 else
                     throw new Exception("error type");

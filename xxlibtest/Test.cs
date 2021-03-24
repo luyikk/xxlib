@@ -82,6 +82,8 @@ namespace PKG.P
 
         public int? px { get; set; }
 
+        public List<PKG.P.Point2> Point2List { get; set; } = new List<PKG.P.Point2>();
+
         public new int Read(xx.ObjManager om, xx.DataReader data)
         {
             base.Read(om, data);
@@ -111,6 +113,21 @@ namespace PKG.P
                 this.px = __px;
             else return err;
 
+            if (data.Offset < endoffset)
+            {
+                if ((err = data.ReadVarInteger(out uint point2list_len)) == 0)
+                {
+                    for (int i = 0; i < point2list_len; i++)
+                    {
+                        var p = new PKG.P.Point2();
+                        if ((err = p.Read(om, data)) == 0)
+                            this.Point2List.Add(p);
+                        else return err;
+                    }
+                }
+                else return err;
+            }
+
             if (data.Offset > endoffset)
                 throw new IndexOutOfRangeException($"struct: 'PKG.P.Player' offset error");
             else
@@ -132,6 +149,10 @@ namespace PKG.P
                 this.position2.Write(om, data);
             }
             om.WriteTo(data, this.px);
+            data.WriteVarInteger((uint)this.Point2List.Count);
+            foreach (var item in this.Point2List)
+                item.Write(om, data);
+
             data.WriteFixedAt(bak, (uint)(data.Length - bak));
         }     
 
@@ -162,6 +183,8 @@ namespace PKG
         public PKG.P.Point3 sp3 { get; set; }
 
         public int? px { get; set; }
+
+        public List<PKG.P.Point3> Point2List { get; set; } = new List<PKG.P.Point3>();
 
         public ushort GetTypeid() => 11;
 
@@ -205,6 +228,18 @@ namespace PKG
             this.px = __px;
             else return err;
 
+            if ((err = data.ReadVarInteger(out uint point2list_len)) == 0)
+            {
+                for (int i = 0; i < point2list_len; i++)
+                {
+                    var p = new PKG.P.Point3();
+                    if ((err = p.Read(om, data)) == 0)
+                        this.Point2List.Add(p);
+                    else return err;
+                }
+            }
+            else return err;
+
             return 0;
         }
 
@@ -228,6 +263,10 @@ namespace PKG
                 this.sp3.Write(om, data);
             }
             om.WriteTo(data, this.px);
+            data.WriteVarInteger((uint)this.Point2List.Count);
+            foreach (var item in this.Point2List)
+                item.Write(om, data);
+
         }
 
         public override string ToString()            
@@ -420,7 +459,7 @@ namespace PKG
 
 public static partial class CodeGen_Test
 {
-    public const string md5 = "#*MD5<f2bfe5b542316d344f79a0c8ddeefc4f>*#"; 
+    public const string md5 = "#*MD5<9ec9a6d7ff803f1f21d00f81ece4bbbb>*#"; 
     public static void Register()
     {
          xx.ObjManager.Register<PKG.Base>(11);

@@ -280,6 +280,8 @@ namespace xxlibtest
             public int S1 { get; set; }
             public string S2 { get; set; }
 
+            public List<StructOne> S3 { get; set; } = new List<StructOne>();
+
             public ushort GetTypeid()
             {
                 return 1;
@@ -291,18 +293,34 @@ namespace xxlibtest
                 if ((err = data.ReadFixed(out uint siz)) != 0) return err;
                 int endoffset = (int)(data.Offset - sizeof(uint) + siz);
 
-                if (data.Offset > endoffset)
+                if (data.Offset >= endoffset)
                     S1 = default;
                 else if ((err = om.ReadFrom(data, out int __s1)) == 0)
                     S1 = __s1;
                 else return err;
 
 
-                if (data.Offset > endoffset)
+                if (data.Offset >= endoffset)
                     S2 = default;
                 else if ((err = om.ReadFrom(data, out string __s2)) == 0)
                     S2 = __s2;
                 else return err;
+
+                if (data.Offset < endoffset)
+                {
+                    if ((err = data.ReadVarInteger(out uint s3_len)) == 0)
+                    {
+                        for (int i = 0; i < s3_len; i++)
+                        {
+                            var p = new StructOne();
+                            if ((err = p.Read(om, data)) == 0)
+                                this.S3.Add(p);
+                            else return err;
+                        }
+                    }
+                    else return err;
+                }               
+
 
 
                 if (data.Offset > endoffset)
@@ -319,6 +337,11 @@ namespace xxlibtest
                 data.WriteFixed(sizeof(uint));
                 om.WriteTo(data, this.S1);
                 om.WriteTo(data, this.S2);
+
+                data.WriteVarInteger((uint)this.S3.Count);
+                foreach (var item in S3)
+                    item.Write(om, data);
+
                 data.WriteFixedAt(bak, (uint)(data.Length - bak));
             }
         }
@@ -667,7 +690,11 @@ namespace xxlibtest
                 foo.My = foo;
                 foo.ST1.S1 = 122;
                 foo.ST1.S2 = "211";
-
+                foo.S3.Add(new StructOne
+                {
+                    S1 = 100,
+                    S2 = "3333"
+                });
                 foo.ST2.S1 = 333;
                 foo.ST2.S2 = "444";
                 foo.ST2.My = foo;

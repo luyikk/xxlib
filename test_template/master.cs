@@ -32,6 +32,7 @@ namespace PKG.P
         Point3 position;
         Nullable<Point3> position2;
         int? px;
+        List<Point2> Point2List;
     }
 }
 
@@ -51,6 +52,7 @@ namespace PKG
         Nullable<PKG.P.Point3> sp2;
         Nullable<PKG.P.Point3> sp3;
         int? px;
+        List<PKG.P.Point3> Point2List;
     }
 
 
