@@ -11,7 +11,7 @@ namespace xx
         Lazy<List<ISerde>> _idxStore = new Lazy<List<ISerde>>(System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
         public List<ISerde> IdxStore => _idxStore.Value;
 
-        byte[] buff;     
+        byte[] buff;
         int len;
         int position;
         int offset;
@@ -19,33 +19,37 @@ namespace xx
         /// <summary>
         /// 长度
         /// </summary>
-        public int Length => len-offset;
+        public int Length => len - offset;
+
+        public int BuffOffset => offset;
+
+        public int Position => position;
 
         /// <summary>
         /// 写入偏移量
         /// </summary>
         public int Offset
         {
-            get => position-offset;
+            get => position - offset;
             set
             {
-                position = offset+value;
+                position = offset + value;
             }
         }
 
 
         public DataReader(byte[] data)
-        {            
+        {
             this.buff = data;
             this.len = data.Length;
         }
 
-        public DataReader(byte[] data,int offset,int length)
+        public DataReader(byte[] data, int offset, int length)
         {
             this.buff = data;
             this.position = offset;
             this.offset = offset;
-            this.len = offset+length;
+            this.len = offset + length;
         }
 
         #region Read
@@ -65,7 +69,7 @@ namespace xx
         /// 从指定下标 读 定长buf. 不改变 offset. 返回非 0 则读取失败
         /// </summary>      
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadBufAt(int idx,byte[] data,int index,int length)
+        public int ReadBufAt(int idx, byte[] data, int index, int length)
         {
             if (idx + length > len) return -2;
             Buffer.BlockCopy(buff, idx, data, index, length);
@@ -96,7 +100,7 @@ namespace xx
         public int ReadFixed(out sbyte v)
         {
             byte b;
-            var r= ReadFixed(out b);
+            var r = ReadFixed(out b);
             v = (sbyte)b;
             return r;
         }
@@ -133,7 +137,7 @@ namespace xx
                 {
                     v = *(ushort*)numRef;
                     if (IsBigEndian)
-                        v =BinaryPrimitives.ReverseEndianness(v);
+                        v = BinaryPrimitives.ReverseEndianness(v);
                     position += sizeof(ushort);
                     return 0;
                 }
@@ -284,7 +288,7 @@ namespace xx
                 {
                     var x = *(uint*)numRef;
                     uint p = IsBigEndian ? BinaryPrimitives.ReverseEndianness(x) : x;
-                    v= *((float*)&p); 
+                    v = *((float*)&p);
                     position += sizeof(float);
                     return 0;
                 }
@@ -309,7 +313,7 @@ namespace xx
                 {
                     var x = *(ulong*)numRef;
                     ulong p = IsBigEndian ? BinaryPrimitives.ReverseEndianness(x) : x;
-                    v= *(double*)&p;
+                    v = *(double*)&p;
                     position += sizeof(double);
                     return 0;
                 }
@@ -327,7 +331,7 @@ namespace xx
         /// 读取一个字节
         /// </summary>      
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFixedAt(int idx,out byte v)
+        public int ReadFixedAt(int idx, out byte v)
         {
             if (idx + sizeof(byte) > len)
             {
@@ -335,7 +339,7 @@ namespace xx
                 return -103;
             }
 
-            v = buff[idx];           
+            v = buff[idx];
             return 0;
         }
 
@@ -347,7 +351,7 @@ namespace xx
         public int ReadFixedAt(int idx, out sbyte v)
         {
             byte b;
-            var r = ReadFixedAt(idx,out b);
+            var r = ReadFixedAt(idx, out b);
             v = (sbyte)b;
             return r;
         }
@@ -358,10 +362,10 @@ namespace xx
         /// <param name="v"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFixedAt(int idx,out bool v)
+        public int ReadFixedAt(int idx, out bool v)
         {
             byte b;
-            var r = ReadFixedAt(idx,out b);
+            var r = ReadFixedAt(idx, out b);
             v = b == 1;
             return r;
         }
@@ -371,7 +375,7 @@ namespace xx
         /// 读取一个 u16
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFixedAt(int idx,out ushort v)
+        public int ReadFixedAt(int idx, out ushort v)
         {
             if (idx + sizeof(ushort) > len)
             {
@@ -385,7 +389,7 @@ namespace xx
                 {
                     v = *(ushort*)numRef;
                     if (IsBigEndian)
-                        v = BinaryPrimitives.ReverseEndianness(v);                    
+                        v = BinaryPrimitives.ReverseEndianness(v);
                     return 0;
                 }
             }
@@ -395,7 +399,7 @@ namespace xx
         /// 读取一个 i16
         /// </summary>    
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public int ReadFixedAt(int idx,out short v)
+        public int ReadFixedAt(int idx, out short v)
         {
             if (idx + sizeof(short) > len)
             {
@@ -409,7 +413,7 @@ namespace xx
                 {
                     v = *(short*)numRef;
                     if (IsBigEndian)
-                        v = BinaryPrimitives.ReverseEndianness(v);                   
+                        v = BinaryPrimitives.ReverseEndianness(v);
                     return 0;
                 }
             }
@@ -433,7 +437,7 @@ namespace xx
                 {
                     v = *(uint*)numRef;
                     if (IsBigEndian)
-                        v = BinaryPrimitives.ReverseEndianness(v);                   
+                        v = BinaryPrimitives.ReverseEndianness(v);
                     return 0;
                 }
             }
@@ -457,7 +461,7 @@ namespace xx
                 {
                     v = *(int*)numRef;
                     if (IsBigEndian)
-                        v = BinaryPrimitives.ReverseEndianness(v);                 
+                        v = BinaryPrimitives.ReverseEndianness(v);
                     return 0;
                 }
             }
@@ -481,7 +485,7 @@ namespace xx
                 {
                     v = *(ulong*)numRef;
                     if (IsBigEndian)
-                        v = BinaryPrimitives.ReverseEndianness(v);                   
+                        v = BinaryPrimitives.ReverseEndianness(v);
                     return 0;
                 }
             }
@@ -505,7 +509,7 @@ namespace xx
                 {
                     v = *(long*)numRef;
                     if (IsBigEndian)
-                        v = BinaryPrimitives.ReverseEndianness(v);                   
+                        v = BinaryPrimitives.ReverseEndianness(v);
                     return 0;
                 }
             }
@@ -527,7 +531,7 @@ namespace xx
             {
                 fixed (byte* numRef = &(buff[idx]))
                 {
-                    v = *(float*)numRef;                   
+                    v = *(float*)numRef;
                     return 0;
                 }
             }
@@ -549,7 +553,7 @@ namespace xx
             {
                 fixed (byte* numRef = &(buff[idx]))
                 {
-                    v = *(double*)numRef;                   
+                    v = *(double*)numRef;
                     return 0;
                 }
             }
@@ -561,17 +565,17 @@ namespace xx
         /// 读取变长 u16
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public  int ReadVarInteger(out ushort v)
+        public int ReadVarInteger(out ushort v)
         {
             v = 0;
-            for (int shift = 0; shift < sizeof(ushort)*8; shift+=7)
+            for (int shift = 0; shift < sizeof(ushort) * 8; shift += 7)
             {
                 if (position == len)
                     return -201;
                 uint b = buff[position++];
-                v|=(ushort)((b & 0x7Fu) << shift);
-                if ((b & 0x80) == 0)                
-                    return 0;                
+                v |= (ushort)((b & 0x7Fu) << shift);
+                if ((b & 0x80) == 0)
+                    return 0;
             }
 
             return -202;
@@ -582,7 +586,7 @@ namespace xx
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int ReadVarInteger(out short v)
-        {          
+        {
             var r = ReadVarInteger(out ushort b);
             v = ZigZagDecode(b);
             return r;
@@ -676,10 +680,10 @@ namespace xx
                     }
                 }
                 else
-                {                  
+                {
                     return 0;
                 }
-            }           
+            }
             return -300;
         }
 

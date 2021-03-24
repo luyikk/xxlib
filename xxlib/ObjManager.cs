@@ -8,7 +8,7 @@ namespace xx
     {
         ushort GetTypeid();
         void Write(ObjManager om, Data data);
-        int Read(ObjManager om, DataReader data);      
+        int Read(ObjManager om, DataReader data);
 
     }
 
@@ -29,7 +29,7 @@ namespace xx
 
         public static ISerde Create(int typeid) => typeIdCreatorMappings[typeid]();
 
-        public static Func<object,string> SerializeStringFunc { get; set; }
+        public static Func<object, string> SerializeStringFunc { get; set; }
 
         public static string SerializeString(object obj)
         {
@@ -40,37 +40,37 @@ namespace xx
         }
 
         #region WriteBase
-        public void WriteTo(Data data, byte b)        
-           => data.WriteFixed(b);        
-
-        public void WriteTo(Data data, sbyte b)        
-           => data.WriteFixed(b);        
-
-        public void WriteTo(Data data, bool b)        
-           => data.WriteFixed(b);        
-
-        public void WriteTo(Data data, short b)        
-           => data.WriteVarInteger(b);        
-
-        public void WriteTo(Data data, ushort b)        
-           => data.WriteVarInteger(b);        
-
-        public void WriteTo(Data data, int b)        
-           => data.WriteVarInteger(b);        
-
-        public void WriteTo(Data data, uint b)        
-           =>data.WriteVarInteger(b);        
-
-        public void WriteTo(Data data, ulong b)        
-            =>data.WriteVarInteger(b);    
-
-        public void WriteTo(Data data, long b)        
-            =>data.WriteVarInteger(b);      
-
-        public void WriteTo(Data data, float b)        
+        public void WriteTo(Data data, byte b)
            => data.WriteFixed(b);
 
-        public void WriteTo(Data data, double b)        
+        public void WriteTo(Data data, sbyte b)
+           => data.WriteFixed(b);
+
+        public void WriteTo(Data data, bool b)
+           => data.WriteFixed(b);
+
+        public void WriteTo(Data data, short b)
+           => data.WriteVarInteger(b);
+
+        public void WriteTo(Data data, ushort b)
+           => data.WriteVarInteger(b);
+
+        public void WriteTo(Data data, int b)
+           => data.WriteVarInteger(b);
+
+        public void WriteTo(Data data, uint b)
+           => data.WriteVarInteger(b);
+
+        public void WriteTo(Data data, ulong b)
+            => data.WriteVarInteger(b);
+
+        public void WriteTo(Data data, long b)
+            => data.WriteVarInteger(b);
+
+        public void WriteTo(Data data, float b)
+           => data.WriteFixed(b);
+
+        public void WriteTo(Data data, double b)
            => data.WriteFixed(b);
 
         public void WriteTo(Data data, byte? b)
@@ -171,7 +171,7 @@ namespace xx
             else
                 data.WriteFixed((byte)0);
         }
-      
+
 
         public void WriteTo(Data data, float? b)
         {
@@ -204,14 +204,14 @@ namespace xx
         #endregion
 
         #region WriteClass
-        public void WriteTo<T>(Data data,T v) where T : class,ISerde
+        public void WriteTo<T>(Data data, T v) where T : class, ISerde
         {
             data.PtrStore.Clear();
             WriteObj(data, v);
         }
 
 
-        public void WriteObj<T>(Data data, T v) where T :  class,ISerde
+        public void WriteObj<T>(Data data, T v) where T : class, ISerde
         {
             if (v is null)
                 data.WriteFixed((byte)0);
@@ -233,9 +233,9 @@ namespace xx
         #endregion
 
         #region WriteArray
-        public void WriteTo(Data data,byte[] v)
+        public void WriteTo(Data data, byte[] v)
         {
-            if(v is null)
+            if (v is null)
             {
                 data.WriteFixed((byte)0);
                 return;
@@ -244,14 +244,14 @@ namespace xx
             data.WriteBuf(v);
         }
 
-        public void WriteTo<T>(Data data,T[] v) where T : class, ISerde
+        public void WriteTo<T>(Data data, T[] v) where T : class, ISerde
         {
             data.PtrStore.Clear();
             WriteObj(data, v);
         }
 
         public void WriteObj<T>(Data data, T[] v) where T : class, ISerde
-        {          
+        {
             data.WriteVarInteger((uint)v.Length);
             foreach (var p in v)
                 WriteObj(data, p);
@@ -262,15 +262,15 @@ namespace xx
 
         #region WriteList
 
-        public void WriteTo<S>(Data data,List<S> v) where S:class,ISerde,new()
+        public void WriteTo<S>(Data data, List<S> v) where S : class, ISerde
         {
             data.PtrStore.Clear();
             WriteObj(data, v);
         }
 
-        public void WriteObj<S>(Data data, List<S> v) where S : class, ISerde, new()
+        public void WriteObj<S>(Data data, List<S> v) where S : class, ISerde
         {
-            if(v is null)
+            if (v is null)
             {
                 data.WriteVarInteger((uint)0);
                 return;
@@ -439,7 +439,7 @@ namespace xx
             }
             data.WriteVarInteger((uint)v.Count);
             foreach (var p in v)
-                WriteTo(data,p);
+                WriteTo(data, p);
         }
 
         public void WriteTo(Data data, List<sbyte?> v)
@@ -599,7 +599,7 @@ namespace xx
         public int ReadFrom(DataReader data, out double v)
           => data.ReadFixed(out v);
 
-        public int ReadFrom(DataReader data, out string v)        
+        public int ReadFrom(DataReader data, out string v)
           => data.ReadVarInteger(out v);
 
         public int ReadFrom(DataReader data, out byte? v)
@@ -870,7 +870,7 @@ namespace xx
 
         #region ReadClass
 
-        public int ReadFrom(DataReader data,out ISerde v)
+        public int ReadFrom(DataReader data, out ISerde v)
         {
             data.IdxStore.Clear();
             return ReadISerde(data, out v);
@@ -886,8 +886,8 @@ namespace xx
             {
                 if (offset == 0)
                     return 0;
-               
-                if(offset == data.IdxStore.Count+1)
+
+                if (offset == data.IdxStore.Count + 1)
                 {
                     if ((err = data.ReadVarInteger(out ushort typeid)) == 0)
                     {
@@ -903,7 +903,7 @@ namespace xx
                 }
                 else
                 {
-                    if(offset> data.IdxStore.Count)
+                    if (offset > data.IdxStore.Count)
                         throw new KeyNotFoundException($"offset :{offset} error");
 
                     v = data.IdxStore[(int)offset - 1];
@@ -923,11 +923,11 @@ namespace xx
             return ReadObj(data, out v);
         }
 
-        public int ReadObj<T>(DataReader data,out T v) where T : class, ISerde, new()
+        public int ReadObj<T>(DataReader data, out T v) where T : class, ISerde, new()
         {
             v = null;
             int err;
-            if ((err= data.ReadVarInteger(out uint offset)) == 0)
+            if ((err = data.ReadVarInteger(out uint offset)) == 0)
             {
                 if (offset == 0)
                     return 0;
@@ -940,7 +940,7 @@ namespace xx
                         if (v != null)
                         {
                             data.IdxStore.Add(v);
-                            return v.Read(this, data);                            
+                            return v.Read(this, data);
                         }
                         else
                             throw new KeyNotFoundException($"create obj not found typeid:{typeid}");
@@ -958,13 +958,13 @@ namespace xx
                         throw new KeyNotFoundException($"offset :{offset} obj not as ISerde");
                 }
             }
-          
+
             return err;
         }
         #endregion
 
         #region ReadArray
-        public int ReadFrom(DataReader data,out byte[] v)
+        public int ReadFrom(DataReader data, out byte[] v)
         {
             v = null;
             var err = data.ReadVarInteger(out uint len);
@@ -1032,7 +1032,7 @@ namespace xx
             return err;
         }
 
-        public int ReadFrom(DataReader data,out List<byte> v)
+        public int ReadFrom(DataReader data, out List<byte> v)
         {
             v = null;
             var err = data.ReadVarInteger(out uint len);
@@ -1043,7 +1043,7 @@ namespace xx
                 {
                     if ((err = data.ReadFixed(out byte b)) == 0)
                         v.Add(b);
-                }                
+                }
             }
             return err;
         }
@@ -1185,7 +1185,7 @@ namespace xx
                 v = new List<string>();
                 for (int i = 0; i < len; i++)
                 {
-                    if ((err = ReadFrom(data,out string b)) == 0)
+                    if ((err = ReadFrom(data, out string b)) == 0)
                         v.Add(b);
                 }
             }
@@ -1201,7 +1201,7 @@ namespace xx
                 v = new List<byte?>();
                 for (int i = 0; i < len; i++)
                 {
-                    if ((err =ReadFrom(data,out byte? b)) == 0)
+                    if ((err = ReadFrom(data, out byte? b)) == 0)
                         v.Add(b);
                 }
             }
@@ -1233,7 +1233,7 @@ namespace xx
                 v = new List<bool?>();
                 for (int i = 0; i < len; i++)
                 {
-                    if ((err = ReadFrom(data,out bool? b)) == 0)
+                    if ((err = ReadFrom(data, out bool? b)) == 0)
                         v.Add(b);
                 }
             }
@@ -1249,7 +1249,7 @@ namespace xx
                 v = new List<short?>();
                 for (int i = 0; i < len; i++)
                 {
-                    if ((err = ReadFrom(data,out short? b)) == 0)
+                    if ((err = ReadFrom(data, out short? b)) == 0)
                         v.Add(b);
                 }
             }
@@ -1265,7 +1265,7 @@ namespace xx
                 v = new List<ushort?>();
                 for (int i = 0; i < len; i++)
                 {
-                    if ((err = ReadFrom(data,out ushort? b)) == 0)
+                    if ((err = ReadFrom(data, out ushort? b)) == 0)
                         v.Add(b);
                 }
             }
@@ -1281,7 +1281,7 @@ namespace xx
                 v = new List<int?>();
                 for (int i = 0; i < len; i++)
                 {
-                    if ((err = ReadFrom(data,out int? b)) == 0)
+                    if ((err = ReadFrom(data, out int? b)) == 0)
                         v.Add(b);
                 }
             }
@@ -1297,7 +1297,7 @@ namespace xx
                 v = new List<uint?>();
                 for (int i = 0; i < len; i++)
                 {
-                    if ((err = ReadFrom(data,out uint? b)) == 0)
+                    if ((err = ReadFrom(data, out uint? b)) == 0)
                         v.Add(b);
                 }
             }
@@ -1313,7 +1313,7 @@ namespace xx
                 v = new List<long?>();
                 for (int i = 0; i < len; i++)
                 {
-                    if ((err = ReadFrom(data,out long? b)) == 0)
+                    if ((err = ReadFrom(data, out long? b)) == 0)
                         v.Add(b);
                 }
             }
@@ -1329,7 +1329,7 @@ namespace xx
                 v = new List<ulong?>();
                 for (int i = 0; i < len; i++)
                 {
-                    if ((err = ReadFrom(data,out ulong? b)) == 0)
+                    if ((err = ReadFrom(data, out ulong? b)) == 0)
                         v.Add(b);
                 }
             }
