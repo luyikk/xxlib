@@ -939,7 +939,6 @@ namespace xx
         public int ReadObj<T>(DataReader data, out T v, bool isfirst = false) where T : class, ISerde, new()
         {
             v = null;
-
             uint offset =1;
             int err;
 
