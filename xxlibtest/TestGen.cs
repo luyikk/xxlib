@@ -12,6 +12,10 @@ namespace xxlibtest
         [Fact]
         public void test_gen()
         {
+            xx.ObjManager.SerializeStringFunc = (p) => Swifter.Json.JsonFormatter.SerializeObject(p, Swifter.Json.JsonFormatterOptions.Indented);
+
+
+
             CodeGen_Test.Register();
             {
                 var data = new xx.Data();
