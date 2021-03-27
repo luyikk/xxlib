@@ -30,6 +30,7 @@ namespace xx
             typeIdCreatorMappings[typeid] = () => { return new T(); };
         }
 
+
         public static ISerde Create(int typeid) => typeIdCreatorMappings[typeid]();
 
         public static Func<object, string> SerializeStringFunc { get; set; }
@@ -40,6 +41,20 @@ namespace xx
                 return SerializeStringFunc(obj);
             else
                 return "SerializeStringFunc is null,Please set it up";
+        }
+
+        public static List<int> GetPackIds(string head_namespace)
+        {
+            var tables = new List<int>();
+            foreach (var item in typeTypeIdMappings)
+            {
+                if (item.Key.FullName.IndexOf(head_namespace) == 0)
+                {
+                    tables.Add(item.Value);
+                }
+            }
+
+            return tables;
         }
 
         #region WriteBase
