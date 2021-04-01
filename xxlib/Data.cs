@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace xx
 {
-    public class Data : IDisposable
+    public class Data 
     {
 
         public static bool IsBigEndian { get; set; }
@@ -747,12 +747,6 @@ namespace xx
 
         }
 
-        public void Dispose()
-        {
-            buff = null;
-            cap = 0;
-            Clear();
-        }
 
         /// <summary>
         /// 下标访问
