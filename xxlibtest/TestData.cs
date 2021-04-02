@@ -8,7 +8,7 @@ namespace xxlibtest
         [Fact]
         public void test_fill()
         {
-            using var data = new xx.Data();
+            var data = new xx.Data();
             data.Fill(new byte[] { 1, 2, 3, 4 });
         
             Assert.True(data.Length == 4);
@@ -32,7 +32,7 @@ namespace xxlibtest
         public void test_write_buff()
         {
             {
-                using var data = new xx.Data(cap: 0);
+                var data = new xx.Data(cap: 0);
                 data.WriteBuf(new byte[] { 1, 2, 3, 4 }, 0, 4);
              
                 Assert.True(data.Length == 4);              
@@ -60,7 +60,7 @@ namespace xxlibtest
                     Assert.True(buff[i] == i + 1);
             }
             {
-                using var data = new xx.Data(cap: 200);  
+                var data = new xx.Data(cap: 200);  
                 data.WriteBuf(new byte[] { 1, 2, 3, 4 }, 0, 4);                
                 Assert.True(data.Length == 4);              
                 for (int i = 0; i < 4; i++)
@@ -81,7 +81,7 @@ namespace xxlibtest
         public void test_write_fixed()
         {
             {
-                using var data = new xx.Data();
+                var data = new xx.Data();
                 data.WriteFixed((byte)1);
                 data.WriteFixed((byte)2);
                 data.WriteFixed((byte)3);
@@ -102,7 +102,7 @@ namespace xxlibtest
             }
 
             {
-                using var data = new xx.Data();
+                var data = new xx.Data();
                 data.WriteFixed(ushort.MaxValue);
 
                 Assert.True(data[0] ==255);
@@ -110,7 +110,7 @@ namespace xxlibtest
                 Assert.True(data.Length == 2);
             }
             {
-                using var data = new xx.Data();
+                var data = new xx.Data();
                 data.WriteFixed(short.MaxValue);
 
                 Assert.True(data[0] == 255);
@@ -119,7 +119,7 @@ namespace xxlibtest
             }
 
             {
-                using var data = new xx.Data();
+                var data = new xx.Data();
                 data.WriteFixed(uint.MaxValue);
 
                 Assert.True(data[0] == 255);
@@ -129,7 +129,7 @@ namespace xxlibtest
                 Assert.True(data.Length == 4);
             }
             {
-                using var data = new xx.Data();
+                var data = new xx.Data();
                 data.WriteFixed(int.MaxValue);
 
                 Assert.True(data[0] == 255);
@@ -141,7 +141,7 @@ namespace xxlibtest
 
 
             {
-                using var data = new xx.Data();
+                var data = new xx.Data();
                 data.WriteFixed(ulong.MaxValue);
 
                 Assert.True(data[0] == 255);
@@ -155,7 +155,7 @@ namespace xxlibtest
                 Assert.True(data.Length == 8);
             }
             {
-                using var data = new xx.Data();
+                var data = new xx.Data();
                 data.WriteFixed(long.MaxValue);
 
                 Assert.True(data[0] == 255);
@@ -169,7 +169,7 @@ namespace xxlibtest
                 Assert.True(data.Length == 8);
             }
             {
-                using var data = new xx.Data();
+                var data = new xx.Data();
 
                 for (int i = 0; i < 10000; i++)
                 {
@@ -186,7 +186,7 @@ namespace xxlibtest
         public void test_write_fixed_at()
         {
             {
-                using var data = new xx.Data();
+                var data = new xx.Data();
                 data.Fill( new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 });
                 data.WriteBufAt(2, new byte[] { 1, 2, 3, 4 });
                 Assert.True(data.Length == 8);
@@ -200,7 +200,7 @@ namespace xxlibtest
             
 
             {
-                using var data = new xx.Data(cap:2);
+                var data = new xx.Data(cap:2);
                 data.WriteBufAt(300, new byte[] { 1, 2, 3, 4 });
                 Assert.True(data.Length == 304);
                 Assert.True(data[300] == 1);
@@ -210,7 +210,7 @@ namespace xxlibtest
             }
           
             {
-                using var data = new xx.Data();
+                var data = new xx.Data();
                 data.Fill(new byte[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 });
                 data.WriteFixedAt(0, byte.MaxValue);
                 data.WriteFixedAt(1, ushort.MaxValue);
@@ -228,7 +228,7 @@ namespace xxlibtest
         public void test_write_var()
         {
             {
-                using var data = new xx.Data();
+                var data = new xx.Data();
                 data.WriteVarInteger((ulong)10000000);
                 data.WriteVarInteger((uint)10000000);
                 data.WriteVarInteger((ulong)10000000);
@@ -237,7 +237,7 @@ namespace xxlibtest
             }
 
             {
-                using var data = new xx.Data();
+                var data = new xx.Data();
                 data.WriteVarInteger((long)10000000);
                 data.WriteVarInteger((int)10000000);
                 data.WriteVarInteger((long)10000000);
@@ -255,7 +255,7 @@ namespace xxlibtest
                 Assert.True(datard.ReadBuf(buff, 0, 10) == 0);
             }
 
-            using var data = new xx.Data();
+            var data = new xx.Data();
 
             {              
                 data.WriteFixed((byte)1);
