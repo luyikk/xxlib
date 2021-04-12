@@ -108,9 +108,9 @@ namespace xx
             else
             {
                 Buffer.BlockCopy(data, index, buff, len, length);
+                len += length;
             }
-
-            len += length;
+          
         }
 
         /// <summary>
@@ -711,18 +711,18 @@ namespace xx
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public (byte[],int) ToArray()
         {           
-            var len = this.len;
+            var _len = this.len;
             Clear();
-            return (buff,len);
+            return (buff, _len);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public byte[] ToData()
         {          
-            var len = this.len;
+            var _len = this.len;
             Clear();
-            var data = new byte[len];
-            Buffer.BlockCopy(buff, 0, data, 0, len);
+            var data = new byte[_len];
+            Buffer.BlockCopy(buff, 0, data, 0, _len);
             return data;
         }
 
