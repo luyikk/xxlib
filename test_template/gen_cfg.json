@@ -1,6 +1,7 @@
 {
-  "refs": [],
+  "refs": ["gen_ref.json"],
   "name": "Test",
   "files": [ "./master.cs" ],
-  "outdir_cs": "../xxlibtest/"
+  "!outdir_cs": "../xxlibtest/",
+  "outdir_rs": "../xxlibtest/"
 }

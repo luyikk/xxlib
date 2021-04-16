@@ -1,0 +1,7 @@
+{
+  "refs": [],
+  "name": "Ref_class",
+  "files": [ "./Ref_test.cs" ],
+  "!outdir_cs": "../xxlibtest/",
+  "outdir_rs": "../xxlibtest/"
+}
