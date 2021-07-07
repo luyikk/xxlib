@@ -2,7 +2,7 @@
 use xxlib_builder::*;
 
 #[allow(dead_code)]
-const  MD5:&'static str="#*MD5<63df4158d595fbeb7d1151d535a36ef5>*#";
+const  MD5:&str="#*MD5<197c8995f4ff02389041d978799ba585>*#";
 
 #[allow(dead_code,non_snake_case)]
 pub fn CodeGen_Ref_class(){
