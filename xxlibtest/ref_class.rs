@@ -2,7 +2,7 @@
 use xxlib_builder::*;
 
 #[allow(dead_code)]
-const  MD5:&str="#*MD5<197c8995f4ff02389041d978799ba585>*#";
+const  MD5:&str="#*MD5<22670ffa4d2344cb7039e8ed23995106>*#";
 
 #[allow(dead_code,non_snake_case)]
 pub fn CodeGen_Ref_class(){
@@ -10,6 +10,7 @@ pub fn CodeGen_Ref_class(){
 }
 
 /// Test Ref
+pub const PKG_REF_TYPENAME_TYPE_ID:u16 = 1222u16;
 #[allow(unused_imports,dead_code,non_snake_case,non_camel_case_types)]
 #[derive(build,Debug)]
 #[cmd(typeid(1222),compatible(false))]

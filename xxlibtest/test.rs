@@ -3,7 +3,7 @@ use xxlib_builder::*;
 use super::ref_class::*;
 
 #[allow(dead_code)]
-const  MD5:&str="#*MD5<2a1544765ea41ba6e64e7afc196d9854>*#";
+const  MD5:&str="#*MD5<361337135b782a0f32b200f7119170ca>*#";
 
 #[allow(dead_code,non_snake_case)]
 pub fn CodeGen_Test(){
@@ -15,6 +15,7 @@ pub fn CodeGen_Test(){
 }
 
 /// Test Struct
+pub const PKG_TESTBASE_TYPE_ID:u16 = 12u16;
 #[allow(unused_imports,dead_code,non_snake_case,non_camel_case_types)]
 #[derive(build,Debug)]
 #[cmd(typeid(12),compatible(true))]
@@ -26,6 +27,7 @@ pub struct PKG_TestBase{
 }
 
 /// Test Struct
+pub const PKG_TESTSTRUCT2_TYPE_ID:u16 = 11u16;
 #[allow(unused_imports,dead_code,non_snake_case,non_camel_case_types)]
 #[derive(build,Debug)]
 #[cmd(typeid(11),compatible(false))]
@@ -64,6 +66,7 @@ pub struct PKG_TestStruct2{
 }
 
 /// Base
+pub const PKG_BASE_TYPE_ID:u16 = 121u16;
 #[allow(unused_imports,dead_code,non_snake_case,non_camel_case_types)]
 #[derive(build,Debug)]
 #[cmd(typeid(121),compatible(false))]
@@ -80,6 +83,7 @@ pub struct PKG_Base{
 }
 
 /// Ponit
+pub const PKG_P_POINT_TYPE_ID:u16 = 122u16;
 #[allow(unused_imports,dead_code,non_snake_case,non_camel_case_types)]
 #[derive(build,Debug)]
 #[cmd(typeid(122),compatible(true))]
@@ -90,6 +94,7 @@ pub struct PKG_P_Point{
 }
 
 /// Foo
+pub const PKG_FOO_TYPE_ID:u16 = 123u16;
 #[allow(unused_imports,dead_code,non_snake_case,non_camel_case_types)]
 #[derive(build,Debug)]
 #[cmd(typeid(123),compatible(true))]
