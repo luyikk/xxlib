@@ -1,0 +1,6 @@
+{
+  "name": "CSharpTest",
+  "files": [ "./csharp_test.cs" ],
+  "outdir_cs": "../xxlibtest/",
+  "outdir_rs": "../xxlibtest/"
+}
